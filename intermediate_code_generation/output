@@ -1,0 +1,85 @@
+************************************************Quadruple Table***********************************************************
+0:	xp	=		*	xp
+1:	temp	=	$0
+2:	xp	=		*	xp
+3:	yp	=		*	yp
+4:		=	xp	*=	$2
+5:	yp	=		*	yp
+6:		=	yp	*=	temp
+7:		=		return	
+8:	$4	=	0
+9:	i	=	$4
+10:	$5	=	0
+11:	j	=	$5
+12:	$6	=	0
+13:	i	=	$6
+14:	$7	=	1
+15:	$8	=	n	-	$7
+16:	if	i	<	$8	goto	21
+17:	goto	46
+18:	$10	=	i
+19:	i	=	i	+	1
+20:	goto	14
+21:	min_idx	=	i
+22:	$11	=	1
+23:	$12	=	i	+	$11
+24:	j	=	$12
+25:	if	j	<	n	goto	30
+26:	goto	38
+27:	$14	=	j
+28:	j	=	j	+	1
+29:	goto	25
+30:	$15	=	j	*	4
+31:	$16	=	arr[$15]
+32:	$17	=	min_idx	*	4
+33:	$18	=	arr[$17]
+34:	if	$16	<	$18	goto	36
+35:	goto	27
+36:	min_idx	=	j
+37:	goto	27
+38:	$20	=	min_idx	*	4
+39:	$21	=		&	arr
+40:	param	$21
+41:	$22	=	i	*	4
+42:	$23	=		&	arr
+43:	param	$23
+44:	$24	=	call	swap,	2
+45:	goto	18
+46:		=		return	
+
+*************************************************Symbol Table**************************************************************
+swap	void		0	0	Yes
+xp	int*		0	0	No
+yp	int*		0	0	No
+temp	int		0	0	No
+$0	int*		0	0	No
+$1	int*		0	0	No
+$2	int*		0	0	No
+$3	int*		0	0	No
+sort	void		0	0	Yes
+arr	int*		0	0	No
+n	int		0	0	No
+i	int		0	0	No
+j	int		0	0	No
+min_idx	int		0	0	No
+$4	int	0	0	0	No
+$5	int	0	0	0	No
+$6	int	0	0	0	No
+$7	int	1	0	0	No
+$8	int		0	0	No
+$9	unknown		0	0	No
+$10	int		0	0	No
+$11	int	1	0	0	No
+$12	int		0	0	No
+$13	unknown		0	0	No
+$14	int		0	0	No
+$15	int		0	0	No
+$16	int*		0	0	No
+$17	int		0	0	No
+$18	int*		0	0	No
+$19	unknown		0	0	No
+$20	int		0	0	No
+$21	int**		0	0	No
+$22	int		0	0	No
+$23	int**		0	0	No
+$24	void		0	0	No

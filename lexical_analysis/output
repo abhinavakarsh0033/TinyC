@@ -1,0 +1,74 @@
+<keyword,int>
+<identifier,a>
+<punctuator,=>
+<constant,5>
+<punctuator,+>
+<constant,3>
+<punctuator,;>
+<keyword,float>
+<identifier,b>
+<punctuator,=>
+<constant,4.2>
+<punctuator,;>
+<keyword,while>
+<punctuator,(>
+<identifier,i>
+<punctuator,<>
+<constant,5>
+<punctuator,)>
+<punctuator,{>
+<identifier,i>
+<punctuator,++>
+<punctuator,;>
+*** COMMENT ***
+<punctuator,}>
+<keyword,if>
+<punctuator,(>
+<identifier,x>
+<punctuator,>>
+<constant,10>
+<punctuator,)>
+<punctuator,{>
+<identifier,x>
+<punctuator,=>
+<constant,20>
+<punctuator,;>
+<punctuator,}>
+<keyword,else>
+<punctuator,{>
+<identifier,x>
+<punctuator,=>
+<constant,30>
+<punctuator,;>
+<punctuator,}>
+
+*******************************************************
+                  SYMBOL TABLE
+
+-------------------------------------------------------
+         TOKENS         |        LEXEMES
+------------------------|------------------------------
+                        |		x
+      IDENTIFIER(4)     |		i
+                        |		b
+                        |		a
+------------------------|------------------------------
+                        |		30
+                        |		20
+        CONSTANT(6)     |		10
+                        |		4.2
+                        |		3
+                        |		5
+------------------------|------------------------------
+------------------------|------------------------------
+                        |		>
+                        |		}
+                        |		++
+                        |		{
+     PUNCTUATOR(10)     |		)
+                        |		<
+                        |		(
+                        |		;
+                        |		+
+                        |		=
+-------------------------------------------------------

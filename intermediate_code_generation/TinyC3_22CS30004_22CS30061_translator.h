@@ -28,6 +28,7 @@ SymbolTable *globalST;
 SymbolTable *currST;
 int currType;   // type of current variable
 Symbol *currSymbol;
+Expression *currExpr, *currExprFor;
 QuadArray *quadTable;
 
 class SymbolType {
@@ -110,7 +111,6 @@ class ArrayExpression {
 public:
     int type;                   // type of array       
     Symbol *addr;               // location of the array  
-    Symbol *entry;              // symbol table entry for this array
     SymbolType *elementType;    // type of array elements
 
     ArrayExpression();
@@ -133,6 +133,8 @@ void convertToInt(Expression *expr);
 void backpatch(vector<int> list, int i);
 
 int nextinstr();
+
+vector<int> makelist();
 
 vector<int> makelist(int i);
 

@@ -54,9 +54,9 @@ void yyerror(string s);
 %type translation_unit external_declaration function_definition declaration_list declaration_list_opt
 
 //5. Marker Non Terminals
-%type <inst> M
+%type <inst> M CB 
 %type <stmt> N
-%type CT
+%type CT FN
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -77,6 +77,7 @@ primary_expression : IDENTIFIER
             $$ -> entry = $1;
             $$ -> type = INT;                                            //TODO: fill this
             // $$ -> entry -> type = new SymbolType(IDENTIFIER);            //TODO: check if this is correct
+            currExpr = $$;
         }
         | INTEGER_CONSTANT 						                        /* CONSTANT split into INTEGER, FLOATING, CHARACTER */
 		{
@@ -86,6 +87,7 @@ primary_expression : IDENTIFIER
             $$ -> type = INT;                                            //TODO: fill this
             $$ -> entry -> type = new SymbolType(INT, SIZE_OF_INT);
             emit("=", $1 -> value, "", $$ -> entry -> name);
+            currExpr = $$;
 		}
 		| FLOATING_CONSTANT
 		{
@@ -95,6 +97,7 @@ primary_expression : IDENTIFIER
             $$ -> type = INT;                                            //TODO: fill this
 			$$ -> entry -> type = new SymbolType(FLOAT, SIZE_OF_FLOAT);  
             emit("=", $1 -> value, "", $$ -> entry -> name);
+            currExpr = $$;
         }
 		| CHARACTER_CONSTANT
 		{
@@ -104,6 +107,7 @@ primary_expression : IDENTIFIER
             $$ -> type = INT;                                            //TODO: fill this
 			$$ -> entry -> type = new SymbolType(CHAR, SIZE_OF_CHAR);    
             emit("=", $1 -> value, "", $$ -> entry -> name);
+            currExpr = $$;
 		}
         | STRING_LITERAL
         {
@@ -112,11 +116,13 @@ primary_expression : IDENTIFIER
             $$ -> entry = $1;
             $$ -> type = INT;                                            //TODO: fill this
             $$ -> entry -> type = new SymbolType(ARRAY, ($1 -> value).size(), new SymbolType(CHAR, SIZE_OF_CHAR));
+            currExpr = $$;
         }
         | LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET
         {
             cerr << "primary_expression -> LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET" << endl;
             $$ = $2;
+            currExpr = $$;
         }
         ;
 postfix_expression : primary_expression
@@ -125,19 +131,24 @@ postfix_expression : primary_expression
             // $$ = new ArrayExpression();
 			$$ = new Expression();
 			$$ -> arr = new ArrayExpression();
-			$$ -> arr -> entry = $1 -> entry;
+			$$ -> entry = $1 -> entry;
             if($1 -> entry == NULL) yyerror("Hey there! something is wrong brother postfix1\n");
 			$$ -> arr -> elementType = $1 -> entry -> type;
-			$$ -> arr -> addr = $$ -> arr -> entry;
+			$$ -> arr -> addr = $$ -> entry;
+            $$ -> type = $1 -> type;
+            $$ -> truelist = $1 -> truelist;
+            $$ -> falselist = $1 -> falselist;
+            $$ -> nextlist = $1 -> nextlist;
+            currExpr = $$;
         }
         | postfix_expression LEFT_SQUARE_BRACKET expression RIGHT_SQUARE_BRACKET    
         {
             cerr << "postfix_expression -> postfix_expression LEFT_SQUARE_BRACKET expression RIGHT_SQUARE_BRACKET" << endl;
             // $$ = new ArrayExpression();
-            if($1 -> arr -> entry == NULL) yyerror("Hey there! something is wrong brother postfix0\n");
+            if($1 -> entry == NULL) yyerror("Hey there! something is wrong brother postfix0\n");
 			$$ = new Expression();
 			$$ -> arr = new ArrayExpression();
-			$$ -> arr -> entry = $1 -> arr -> entry;
+			$$ -> entry = $1 -> entry;
 			$$ -> arr -> elementType = $1 -> arr -> elementType -> elementType;
 			$$ -> arr -> addr = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));	//creating temp to calculate index in arr
 			$$ -> arr -> type = ARRAY;
@@ -154,6 +165,7 @@ postfix_expression : primary_expression
                 emit("*", $3 -> entry -> name, to_string(sizeOfType($1 -> arr -> elementType)), $$ -> arr -> addr -> name);
 				// emit("*", $$ -> addr -> name);
 			}
+            currExpr = $$;
         }
         | postfix_expression LEFT_ROUND_BRACKET argument_expression_list_opt RIGHT_ROUND_BRACKET
         {
@@ -161,8 +173,9 @@ postfix_expression : primary_expression
             /* do it not now */
             $$ = new Expression();
 			$$ -> arr = new ArrayExpression();
-			$$ -> arr -> entry = SymbolTable::gentemp($1 -> arr -> elementType);
-            emit("call", $1 -> arr -> entry -> name, to_string($3), $$ -> arr -> entry -> name);
+			$$ -> entry = SymbolTable::gentemp($1 -> arr -> elementType);
+            emit("call", $1 -> entry -> name, to_string($3), $$ -> entry -> name);
+            currExpr = $$;
         }
         | postfix_expression DOT IDENTIFIER                                                                                 {/* skip */ cerr << "postfix_expression -> postfix_expression DOT IDENTIFIER" << endl;}
         | postfix_expression ARROW IDENTIFIER                                                                               {/* skip */ cerr << "postfix_expression -> postfix_expression ARROW IDENTIFIER" << endl;}
@@ -171,18 +184,21 @@ postfix_expression : primary_expression
             cerr << "postfix_expression -> postfix_expression INCREMENT" << endl;
 			$$ = new Expression();
 			$$ -> arr = new ArrayExpression();
-			$$ -> arr -> entry = SymbolTable::gentemp($1 -> arr -> entry -> type);
-			emit("=", $1 -> arr -> entry -> name, "", $$ -> arr -> entry -> name);
-			emit("+", $1 -> arr -> entry -> name, "1", $1 -> arr -> entry -> name);
+			$$ -> entry = SymbolTable::gentemp($1 -> entry -> type);
+            cout << $$ -> entry -> name << endl;
+			emit("=", $1 -> entry -> name, "", $$ -> entry -> name);
+			emit("+", $1 -> entry -> name, "1", $1 -> entry -> name);
+            currExpr = $$;
 		}
         | postfix_expression DECREMENT
 		{
             cerr << "postfix_expression -> postfix_expression DECREMENT" << endl;
 			$$ = new Expression();
 			$$ -> arr = new ArrayExpression();
-			$$ -> arr -> entry = SymbolTable::gentemp($1 -> arr -> entry -> type);
-			emit("=", $1 -> arr -> entry -> name, "", $$ -> arr -> entry -> name);
-			emit("-", $1 -> arr -> entry -> name, "1", $1 -> arr -> entry -> name);
+			$$ -> entry = SymbolTable::gentemp($1 -> entry -> type);
+			emit("=", $1 -> entry -> name, "", $$ -> entry -> name);
+			emit("-", $1 -> entry -> name, "1", $1 -> entry -> name);
+            currExpr = $$;
 		}
         | LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET LEFT_CURLY_BRACKET initializer_list RIGHT_CURLY_BRACKET          {/* doubt_skip */ cerr << "postfix_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET LEFT_CURLY_BRACKET initializer_list RIGHT_CURLY_BRACKET" << endl; yyerror("Hey there! something is wrong brother postfix2\n");}
         | LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET LEFT_CURLY_BRACKET initializer_list COMMA RIGHT_CURLY_BRACKET    {/* doubt skip */ cerr << "postfix_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET LEFT_CURLY_BRACKET initializer_list COMMA RIGHT_CURLY_BRACKET" << endl; yyerror("Hey there! something is wrong brother postfix3\n");}
@@ -215,18 +231,21 @@ unary_expression : postfix_expression
 		{
             cerr << "unary_expression -> postfix_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | INCREMENT unary_expression
 		{
             cerr << "unary_expression -> INCREMENT unary_expression" << endl;
-			emit("+", $2 -> arr -> entry -> name, "1", $2 -> arr -> entry -> name);
+			emit("+", $2 -> entry -> name, "1", $2 -> entry -> name);
 			$$ = $2;
+            currExpr = $$;
 		}
         | DECREMENT unary_expression
 		{
             cerr << "unary_expression -> DECREMENT unary_expression" << endl;
-			emit("-", $2 -> arr -> entry -> name, "1", $2 -> arr -> entry -> name);
+			emit("-", $2 -> entry -> name, "1", $2 -> entry -> name);
 			$$ = $2;
+            currExpr = $$;
 		}
         | unary_operator cast_expression
 		{
@@ -238,37 +257,42 @@ unary_expression : postfix_expression
 			$$ -> arr = new ArrayExpression();
 			if($1 == AMPERSAND)
 			{
-				$$ -> arr -> entry = SymbolTable::gentemp(new SymbolType(POINTER, SIZE_OF_POINTER));
-				$$ -> arr -> entry -> type -> elementType = $2 -> arr -> entry -> type;
-				emit("&", "", $2 -> arr -> entry -> name, $$ -> arr -> entry -> name);
+				$$ -> entry = SymbolTable::gentemp(new SymbolType(POINTER, SIZE_OF_POINTER));
+				$$ -> entry -> type -> elementType = $2 -> entry -> type;
+				emit("u&", $2 -> entry -> name, "", $$ -> entry -> name);
 			}
 			else if($1 == ASTERISK)
 			{
 				$$ -> arr -> type = POINTER;
-				$$ -> arr -> addr = SymbolTable::gentemp($2 -> arr -> entry -> type);
-				$$ -> arr -> entry = $2 -> arr -> entry;
-				emit("*", "", $2 -> arr -> entry -> name, $$ -> arr -> entry -> name);
+				$$ -> arr -> addr = SymbolTable::gentemp($2 -> entry -> type);
+				$$ -> entry = $2 -> entry;
+				emit("u*",$2 -> entry -> name, "", $$ -> arr -> addr -> name);
 			}
 			else if($1 == PLUS)
 			{
-                $$ -> arr -> entry = SymbolTable::gentemp($2 -> arr -> entry -> type);
+                $$ = $2;
 			}
 			else if($1 == MINUS)
 			{
-				$$ -> arr -> entry = SymbolTable::gentemp($2 -> arr -> entry -> type);
-				emit("-", "", $2 -> arr -> entry -> name, $$ -> arr -> entry -> name);
+				$$ -> entry = SymbolTable::gentemp($2 -> entry -> type);
+				emit("u-", $2 -> entry -> name, "", $$ -> entry -> name);
 			}
 			else if($1 == TILDE)
 			{
-				$$ -> arr -> entry = SymbolTable::gentemp($2 -> arr -> entry -> type);
-				emit("~", "", $2 -> arr -> entry -> name, $$ -> arr -> entry -> name);
+				$$ -> entry = SymbolTable::gentemp($2 -> entry -> type);
+				emit("u~", $2 -> entry -> name, "", $$ -> entry -> name);
 			}
 			else if($1 == EXCLAMATION)
 			{
-                $$ -> arr -> entry = SymbolTable::gentemp($2 -> arr -> entry -> type);
-				swap($$ -> truelist, $$ -> falselist);
-				if($2 -> type != BOOL) emit("!", "", $2 -> arr -> entry -> name, $$ -> arr -> entry -> name);
+                $$ -> entry = SymbolTable::gentemp($2 -> entry -> type);
+				swap($2 -> truelist, $2 -> falselist);
+                $$ -> truelist = $2 -> truelist;
+                $$ -> falselist = $2 -> falselist;
+                $$ -> nextlist = $2 -> nextlist;
+                $$ -> type = $2 -> type;
+				if($2 -> type != BOOL) emit("u!", $2 -> entry -> name, "", $$ -> entry -> name);
 			}
+            currExpr = $$;
 		}		
         | SIZEOF unary_expression                                                       {/* skip */ cerr << "unary_expression -> SIZEOF unary_expression" << endl;}
         | SIZEOF LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET                       {/* skip */ cerr << "unary_expression -> SIZEOF LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET" << endl;}
@@ -309,6 +333,7 @@ cast_expression : unary_expression
 		{
             cerr << "cast_expression -> unary_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET cast_expression              {/* doubt skip */ cerr << "cast_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET cast_expression" << endl; yyerror("Hey there! something is wrong brother cast1\n");}
         ;
@@ -319,15 +344,17 @@ multiplicative_expression : cast_expression
             $$ -> truelist = $1 -> truelist;
             $$ -> falselist = $1 -> falselist;
             $$ -> nextlist = $1 -> nextlist;
+            $$ -> type = $1 -> type;
 			if($1 -> arr -> type == ARRAY)
 			{
-                SymbolType *temp = $1 -> arr -> entry -> type;
+                SymbolType *temp = $1 -> entry -> type;
                 while(temp -> type == ARRAY) temp = temp -> elementType;
 				$$ -> entry = SymbolTable::gentemp(temp);
-                emit("=[]", $1 -> arr -> entry -> name, $1 -> arr -> addr -> name, $$ -> entry -> name);
+                emit("=[]", $1 -> entry -> name, $1 -> arr -> addr -> name, $$ -> entry -> name);
 			}
             else if($1 -> arr -> type == POINTER) $$ -> entry = $1 -> arr -> addr;
-            else $$ -> entry = $1 -> arr -> entry;
+            else $$ -> entry = $1 -> entry;
+            currExpr = $$;
 		}
         | multiplicative_expression ASTERISK cast_expression //TODO: verify all this
         {
@@ -335,7 +362,8 @@ multiplicative_expression : cast_expression
             if(typeCheck($1 -> entry -> type, $3 -> arr -> elementType) == 0) yyerror("Hey there! something is wrong brother multiplicative1\n");
             $$ = new Expression();
             $$ -> entry = SymbolTable::gentemp($1 -> entry -> type);
-            emit("*", $1 -> entry -> name, $3 -> arr -> entry -> name, $$ -> entry -> name);
+            emit("*", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
+            currExpr = $$;
         }
         | multiplicative_expression FORWARD_SLASH cast_expression
         {
@@ -343,7 +371,8 @@ multiplicative_expression : cast_expression
             if(typeCheck($1 -> entry -> type, $3 -> arr -> elementType) == 0) yyerror("Hey there! something is wrong brother multiplicative2\n");
             $$ = new Expression();
             $$ -> entry = SymbolTable::gentemp($1 -> entry -> type);
-            emit("/", $1 -> entry -> name, $3 -> arr -> entry -> name, $$ -> entry -> name);
+            emit("/", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
+            currExpr = $$;
         }
         | multiplicative_expression PERCENT cast_expression
         {
@@ -351,13 +380,15 @@ multiplicative_expression : cast_expression
             if(typeCheck($1 -> entry -> type, $3 -> arr -> elementType) == 0) yyerror("Hey there! something is wrong brother multiplicative3\n");
             $$ = new Expression();
             $$ -> entry = SymbolTable::gentemp($1 -> entry -> type);
-            emit("%", $1 -> entry -> name, $3 -> arr -> entry -> name, $$ -> entry -> name);
+            emit("%", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
+            currExpr = $$;
         }
         ;
 additive_expression : multiplicative_expression
 		{
             cerr << "additive_expression -> multiplicative_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | additive_expression PLUS multiplicative_expression
 		{
@@ -367,6 +398,7 @@ additive_expression : multiplicative_expression
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp($1 -> entry -> type);	//TODO: check this
 			emit("+", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
+            currExpr = $$;
 		}
         | additive_expression MINUS multiplicative_expression
 		{
@@ -376,12 +408,14 @@ additive_expression : multiplicative_expression
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp($1 -> entry -> type);	//TODO: check this
 			emit("-", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
+            currExpr = $$;
 		}
         ;
 shift_expression : additive_expression
 		{
             cerr << "shift_expression -> additive_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | shift_expression LEFT_SHIFT additive_expression
 		{
@@ -391,6 +425,7 @@ shift_expression : additive_expression
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
 			emit("<<", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
+            currExpr = $$;
 		}
         | shift_expression RIGHT_SHIFT additive_expression
 		{
@@ -400,12 +435,14 @@ shift_expression : additive_expression
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
 			emit(">>", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
+            currExpr = $$;
 		}
         ;
 relational_expression : shift_expression
 		{
             cerr << "relational_expression -> shift_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | relational_expression LESS_THAN shift_expression
 		{
@@ -417,8 +454,9 @@ relational_expression : shift_expression
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
 			$$ -> truelist = makelist(nextinstr());
 			$$ -> falselist = makelist(nextinstr() + 1);
-			emit("if <", $1 -> entry -> name, $3 -> entry -> name, "");
-			emit("goto", "", "", "");
+			emit("if <", $1 -> entry -> name, $3 -> entry -> name, "__");
+			emit("goto", "", "", "__");
+            currExpr = $$;
 		}
         | relational_expression GREATER_THAN shift_expression
 		{
@@ -429,8 +467,9 @@ relational_expression : shift_expression
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
 			$$ -> truelist = makelist(nextinstr());
 			$$ -> falselist = makelist(nextinstr() + 1);
-			emit("if >", $1 -> entry -> name, $3 -> entry -> name, "");
-			emit("goto", "", "", "");
+			emit("if >", $1 -> entry -> name, $3 -> entry -> name, "__");
+			emit("goto", "", "", "__");
+            currExpr = $$;
 		}
         | relational_expression LESS_THAN_EQUAL shift_expression
 		{
@@ -441,8 +480,9 @@ relational_expression : shift_expression
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
 			$$ -> truelist = makelist(nextinstr());
 			$$ -> falselist = makelist(nextinstr() + 1);
-			emit("if <=", $1 -> entry -> name, $3 -> entry -> name, "");
-			emit("goto", "", "", "");
+			emit("if <=", $1 -> entry -> name, $3 -> entry -> name, "__");
+			emit("goto", "", "", "__");
+            currExpr = $$;
 		}
         | relational_expression GREATER_THAN_EQUAL shift_expression
 		{
@@ -453,14 +493,16 @@ relational_expression : shift_expression
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
 			$$ -> truelist = makelist(nextinstr());
 			$$ -> falselist = makelist(nextinstr() + 1);
-			emit("if >=", $1 -> entry -> name, $3 -> entry -> name, "");
-			emit("goto", "", "", "");
+			emit("if >=", $1 -> entry -> name, $3 -> entry -> name, "__");
+			emit("goto", "", "", "__");
+            currExpr = $$;
 		}
         ;
 equality_expression : relational_expression
 		{
             cerr << "equality_expression -> relational_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | equality_expression EQUAL relational_expression
 		{
@@ -471,8 +513,9 @@ equality_expression : relational_expression
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
 			$$ -> truelist = makelist(nextinstr());
 			$$ -> falselist = makelist(nextinstr() + 1);
-			emit("if ==", $1 -> entry -> name, $3 -> entry -> name, "");
-			emit("goto", "", "", "");
+			emit("if ==", $1 -> entry -> name, $3 -> entry -> name, "__");
+			emit("goto", "", "", "__");
+            currExpr = $$;
 		}
         | equality_expression NOT_EQUAL relational_expression
 		{
@@ -483,14 +526,16 @@ equality_expression : relational_expression
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
 			$$ -> truelist = makelist(nextinstr());
 			$$ -> falselist = makelist(nextinstr() + 1);
-			emit("if !=", $1 -> entry -> name, $3 -> entry -> name, "");
-			emit("goto", "", "", "");
+			emit("if !=", $1 -> entry -> name, $3 -> entry -> name, "__");
+			emit("goto", "", "", "__");
+            currExpr = $$;
 		}
         ;
 AND_expression : equality_expression
 		{
             cerr << "AND_expression -> equality_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | AND_expression AMPERSAND equality_expression
 		{
@@ -500,12 +545,14 @@ AND_expression : equality_expression
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
 			emit("&", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
+            currExpr = $$;
 		}
         ;
 exclusive_OR_expression : AND_expression
 		{
             cerr << "exclusive_OR_expression -> AND_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | exclusive_OR_expression CARET AND_expression
 		{
@@ -515,12 +562,14 @@ exclusive_OR_expression : AND_expression
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
 			emit("^", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
+            currExpr = $$;
 		}
         ;
 inclusive_OR_expression : exclusive_OR_expression
 		{
             cerr << "inclusive_OR_expression -> exclusive_OR_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | inclusive_OR_expression PIPE exclusive_OR_expression
 		{
@@ -530,48 +579,55 @@ inclusive_OR_expression : exclusive_OR_expression
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
 			emit("|", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
+            currExpr = $$;
 		}
         ;
 logical_AND_expression : inclusive_OR_expression
 		{
             cerr << "logical_AND_expression -> inclusive_OR_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
-        | logical_AND_expression LOGICAL_AND M inclusive_OR_expression
+        | logical_AND_expression LOGICAL_AND CB M inclusive_OR_expression
 		{
             cerr << "logical_AND_expression -> logical_AND_expression LOGICAL_AND M inclusive_OR_expression" << endl;
-			convertToBool($1);
-			convertToBool($4);
-			backpatch($1 -> truelist, $3);
+			cerr << $1 -> type << endl;
+            convertToBool($1);
+			convertToBool($5);
+			backpatch($1 -> truelist, $4);
 			$$ = new Expression();
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
 			$$ -> type = BOOL;
-			$$ -> truelist = $4 -> truelist;
-			$$ -> falselist = merge($1 -> falselist, $4 -> falselist);
+			$$ -> truelist = $5 -> truelist;
+			$$ -> falselist = merge($1 -> falselist, $5 -> falselist);
+            currExpr = $$;
 		}
         ;
 logical_OR_expression : logical_AND_expression
 		{
             cerr << "logical_OR_expression -> logical_AND_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
-        | logical_OR_expression LOGICAL_OR M logical_AND_expression       
+        | logical_OR_expression LOGICAL_OR CB M logical_AND_expression       
 		{
             cerr << "logical_OR_expression -> logical_OR_expression LOGICAL_OR M logical_AND_expression" << endl;
 			convertToBool($1);
-			convertToBool($4);
-			backpatch($1 -> falselist, $3);
+			convertToBool($5);
+			backpatch($1 -> falselist, $4);
 			$$ = new Expression();
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
 			$$ -> type = BOOL;
-			$$ -> truelist = merge($1 -> truelist, $4 -> truelist);
-			$$ -> falselist = $4 -> falselist;
+			$$ -> truelist = merge($1 -> truelist, $5 -> truelist);
+			$$ -> falselist = $5 -> falselist;
+            currExpr = $$;
 		}
         ;
 conditional_expression : logical_OR_expression
 		{
             cerr << "conditional_expression -> logical_OR_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | logical_OR_expression QUESTION_MARK expression COLON conditional_expression       {/* skip */ cerr << "conditional_expression -> logical_OR_expression QUESTION_MARK expression COLON conditional_expression" << endl;}
         ;
@@ -579,25 +635,29 @@ assignment_expression : conditional_expression
 		{
             cerr << "assignment_expression -> conditional_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | unary_expression assignment_operator assignment_expression //TODO: verify this may need type checking
 		{
             cerr << "assignment_expression -> unary_expression assignment_operator assignment_expression" << endl;
 			//TODO: check this
-            if($1 -> arr -> type == ARRAY) emit("[]=",  $1 -> arr -> addr -> name, $3 -> entry -> name, $1 -> arr -> entry -> name);
-            else if($1 -> arr -> type == POINTER) emit("*=", $1 -> arr -> entry -> name, $3 -> entry -> name, "");
-            else emit("=",$3 -> entry -> name, "",$1 -> arr -> entry -> name);
+            if($1 -> arr -> type == ARRAY) emit("[]=",  $1 -> arr -> addr -> name, $3 -> entry -> name, $1 -> entry -> name);
+            else if($1 -> arr -> type == POINTER) emit("*=", $3 -> entry -> name, "", $1 -> entry -> name);
+            else emit("=",$3 -> entry -> name, "",$1 -> entry -> name);
+            currExpr = $$;
         }
         ;
 assignment_expression_opt : /* epsilon */
 		{
             cerr << "assignment_expression_opt -> epsilon" << endl;
-			$$ = NULL;
+			$$ = new Expression();
+            currExpr = $$;
 		}
         | assignment_expression
 		{
             cerr << "assignment_expression_opt -> assignment_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         ;
 assignment_operator : ASSIGNMENT
@@ -620,19 +680,21 @@ expression : assignment_expression
 		{
             cerr << "expression -> assignment_expression" << endl;
 			$$ = $1;
+            currExpr = $$;
 		}
         | expression COMMA assignment_expression        {/* skip */ cerr << "expression -> expression COMMA assignment_expression" << endl;}
         ;
 expression_opt : /* epsilon */
         {
             cerr << "expression_opt -> epsilon" << endl;
-            $$ = new Expression();						//verify this
-			fprintf(stderr, "Hey there! something is wrong brother expression_opt\n");
+            $$ = NULL;				//verify this
+            currExpr = $$;
         }
         | expression
         {
             cerr << "expression_opt -> expression" << endl;
             $$ = $1;
+            currExpr = $$;
         }
         ;
 constant_expression : conditional_expression            {/* skip due to parent*/ cerr << "constant_expression -> conditional_expression" << endl;}
@@ -992,31 +1054,34 @@ expression_statement : expression_opt SEMICOLON
             $$ -> nextlist = $1 -> nextlist; /* BEWARE : $1 may be null */
         }
         ;
-selection_statement : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET M statement %prec LOWER_THAN_ELSE    //TODO: verify this
+selection_statement : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET CB M statement %prec LOWER_THAN_ELSE    //TODO: verify this
         {
             cerr << "selection_statement -> IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET M statement" << endl;
+            // for(auto x: $3 -> truelist) cout << x+1 << " "; cout << endl;
+            // for(auto x: $3 -> falselist) cout << x+1 << " "; cout << endl;
             convertToBool($3);
-            backpatch($3 -> truelist, $5);
+            backpatch($3 -> truelist, $6);
+            cout << $6 << endl;
             $$ = new Statement();
-            $$ -> nextlist = merge($3 -> falselist, $6 -> nextlist);
+            $$ -> nextlist = merge($3 -> falselist, $7 -> nextlist);
         }
-        | IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET M statement ELSE N M statement
+        | IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET CB M statement ELSE N M statement
         {
             cerr << "selection_statement -> IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET M statement ELSE N M statement" << endl;
             convertToBool($3);
-            backpatch($3 -> truelist, $5);
-            backpatch($3 -> falselist, $9);
+            backpatch($3 -> truelist, $6);
+            backpatch($3 -> falselist, $10);
             $$ = new Statement();
-            $$ -> nextlist = merge(merge($6 -> nextlist, $8 -> nextlist), $10 -> nextlist);
+            $$ -> nextlist = merge(merge($7 -> nextlist, $9 -> nextlist), $11 -> nextlist);
         }
         | SWITCH LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET statement            {/* skip */ cerr << "selection_statement -> SWITCH LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET statement" << endl;}
         ;
-iteration_statement : WHILE M LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET M statement
+iteration_statement : WHILE M LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET CB M statement
         {
             cerr << "iteration_statement -> WHILE M LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET M statement" << endl;
             convertToBool($4);
-            backpatch($4 -> truelist, $6);
-            backpatch($7 -> nextlist, $2);
+            backpatch($4 -> truelist, $7);
+            backpatch($8 -> nextlist, $2);
             $$ = new Statement();
             $$ -> nextlist = $4 -> falselist;
             emit("goto", "", "", to_string($2));
@@ -1030,16 +1095,17 @@ iteration_statement : WHILE M LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET 
             $$ = new Statement();
             $$ -> nextlist = $7 -> falselist;
         }
-        | FOR LEFT_ROUND_BRACKET expression_opt SEMICOLON M expression_opt SEMICOLON M expression_opt N RIGHT_ROUND_BRACKET M statement
+        | FOR LEFT_ROUND_BRACKET expression_opt SEMICOLON M expression_opt SEMICOLON FN CB M expression_opt N RIGHT_ROUND_BRACKET M statement
         {
             cerr << "iteration_statement -> FOR LEFT_ROUND_BRACKET expression_opt SEMICOLON M expression_opt SEMICOLON M expression_opt N RIGHT_ROUND_BRACKET M statement" << endl;
-            convertToBool($6);
-            backpatch($6 -> truelist, $12);
-            backpatch($10 -> nextlist, $5);
-            backpatch($13 -> nextlist, $8);
+            if($6) convertToBool($6);
+            if($6) backpatch($6 -> truelist, $14);
+            if($12) backpatch($12 -> nextlist, $5);
+            if($15) backpatch($15 -> nextlist, $10);
             $$ = new Statement();
-            $$ -> nextlist = $6 -> falselist;
-            emit("goto", "", "", to_string($8));
+            if($6) $$ -> nextlist = $6 -> falselist;
+            else $$ -> nextlist = makelist();
+            emit("goto", "", "", to_string($10));
         }
         | FOR LEFT_ROUND_BRACKET declaration expression_opt SEMICOLON expression_opt RIGHT_ROUND_BRACKET statement                      {/* skip */ cerr << "iteration_statement -> FOR LEFT_ROUND_BRACKET declaration expression_opt SEMICOLON expression_opt RIGHT_ROUND_BRACKET statement" << endl;}                   
         ;
@@ -1086,15 +1152,29 @@ M : /* epsilon */
         ;
 N : /* epsilon */
         {
-            $$ = new Statement();
-            $$ -> nextlist = makelist(nextinstr());
-            emit("goto", "", "", "");
+            if(currExprFor) {
+                $$ = new Statement();
+                $$ -> nextlist = makelist(nextinstr());
+                emit("goto", "", "", "__");
+            }
+            else $$ = NULL;
         }
-
+        ;
 CT : /* epsilon */
         {
             
         }
+        ;
+CB : /* epsilon */
+        {
+            convertToBool(currExpr);
+        }
+        ;
+FN : /* epsilon */
+        {
+            currExprFor = currExpr;
+        }
+        ;
 %%
 
 void yyerror(string s) {

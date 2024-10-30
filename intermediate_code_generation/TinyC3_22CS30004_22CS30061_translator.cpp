@@ -18,6 +18,7 @@ SymbolType::SymbolType(int type, int num_elements, SymbolType *elementType) {
 void SymbolType::print() {
     switch(type) {
         case VOID: cout << "void"; break;
+        case BOOL: cout << "bool"; break;
         case CHAR: cout << "char"; break;
         case INT: cout << "int"; break;
         case FLOAT: cout << "float"; break;
@@ -42,7 +43,7 @@ Symbol::Symbol(string name, SymbolType *type, string value, int size, int offset
     this -> name = name;
     this -> type = type;
     this -> value = value;
-    this -> size = size;
+    this -> size = sizeOfType(type);
     this -> offset = offset;
     this -> nestedTable = nestedTable;
 }
@@ -124,14 +125,18 @@ Quad::Quad(string op, string arg1, string arg2, string res) {
 }
 
 void Quad::print() {
-    // cout << res << "\t" << op << "\t" << arg1 << "\t" << arg2 << endl;
-    if(op == "goto") cout << op << "\t" << res << endl;
-    else if(op.substr(0,2) == "if") cout << "if\t" << arg1 << "\t" << op.substr(3) << "\t" << arg2 << "\tgoto\t" << res << endl;
+    // cout << op << "\t" << arg1 << "\t" << arg2 << "\t" << res << endl; 
+    if(op == "goto") cout << op << "\t" << ((res!="__") ? to_string(stoi(res)+1) : res) << endl;
+    else if(op == "if==") cout << "ifFalse\t" << arg1 << " == 0" << "\tgoto\t" << ((res!="__") ? to_string(stoi(res)+1) : res) <<endl;
+    else if(op.substr(0,2) == "if") cout << "if\t" << arg1 << " " << op.substr(3) << " " << arg2 << "\tgoto\t" << ((res!="__") ? to_string(stoi(res)+1) : res) << endl;
     else if(op == "=[]") cout << res << "\t=\t" << arg1 << "[" << arg2 << "]" << endl;
     else if(op == "[]=") cout << res << "[" << arg1 << "]\t=\t" << arg2 << endl;
+    else if(op == "*=") cout << "*" << res << "\t=\t" << arg1 << endl;
     else if(op == "=") cout << res << "\t=\t" << arg1 << endl;
     else if(op == "param") cout << "param\t" << arg1 << endl;
-    else if(op == "call") cout << res << "\t=\t" << "call\t" << arg1 << ",\t" << arg2 << endl;
+    else if(op == "call") cout << res << "\t=\t" << "call\t" << arg1 << "\t" << arg2 << endl;
+    else if(op.substr(0,1) == "u") cout << res << "\t=\t" << op.substr(1) << arg1 << endl;
+    else if(op == "return") cout << "return\t" << res << endl; 
     else cout << res << "\t=\t" << arg1 << "\t" << op << "\t" << arg2 << endl;
 }
 
@@ -141,7 +146,7 @@ QuadArray::QuadArray() {
 
 void QuadArray::print() {
     for(int i=0;i<arr.size();i++) {
-        cout << i << ":\t";
+        cout << i+1 << ":\t";
         arr[i] -> print();
     }
 }
@@ -167,14 +172,12 @@ Expression::Expression(int type) {
 ArrayExpression::ArrayExpression() {
     this -> type = INT;
     this -> addr = NULL;
-    this -> entry = NULL;
     this -> elementType = NULL;
 }
 
 ArrayExpression::ArrayExpression(int type) {
     this -> type = type;
     this -> addr = NULL;
-    this -> entry = NULL;
     this -> elementType = NULL;
 }
 
@@ -186,12 +189,14 @@ void emit(string op, string arg1, string arg2, string res) {
     quadTable -> arr.push_back(new Quad(op, arg1, arg2, res));
 }
 
-void convertToBool(Expression *expr) {  // TODO: Review if(x<y) x++;
+void convertToBool(Expression *expr) {
+    if(expr == NULL) yyerror("Expression is NULL");
     if(expr -> type != BOOL) {
-        expr -> falselist = makelist(nextinstr());
-        emit("=", "0", "", expr -> entry -> name);
+        expr -> type = BOOL;
         expr -> truelist = makelist(nextinstr());
-        emit("goto", "", "", "");
+        emit("if==", expr -> entry -> name, "", "__");
+        expr -> falselist = makelist(nextinstr());
+        emit("goto", "", "", "__");
     }
 }
 
@@ -215,6 +220,11 @@ int nextinstr() {
     return quadTable -> arr.size();
 }
 
+vector<int> makelist() {
+    vector<int> list;
+    return list;
+}
+
 vector<int> makelist(int i) {
     vector<int> list;
     list.push_back(i);
@@ -234,6 +244,7 @@ vector<int> merge(vector<int> a, vector<int> b) {
 int sizeOfType(SymbolType *type) {
     switch(type -> type) {
         case VOID: return SIZE_OF_VOID;
+        case BOOL: return SIZE_OF_BOOL;
         case CHAR: return SIZE_OF_CHAR;
         case INT: return SIZE_OF_INT;
         case FLOAT: return SIZE_OF_FLOAT;

@@ -13,4 +13,4 @@ run: all
 	./a.out < TinyC3_22CS30004_22CS30061_test_5.c > outputs/output_5 2> debug/debug_5
 
 clean:
-	rm -f lex.yy.c y.tab.c y.tab.h a.out output errors
+	rm -f -R lex.yy.c y.tab.c y.tab.h a.out outputs debug

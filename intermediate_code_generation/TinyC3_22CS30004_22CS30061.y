@@ -55,7 +55,7 @@ void yyerror(string s);
 
 //5. Marker Non Terminals
 %type <inst> M CB 
-%type <stmt> N
+%type <stmt> N N1
 %type CT FN CTF
 
 %nonassoc LOWER_THAN_ELSE
@@ -157,13 +157,11 @@ postfix_expression : primary_expression
 			{
 				Symbol *temp = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));
 				//sizeOfType recusively calculates the size of the arr
-                $$ -> entry -> type = $1 -> arr -> elementType;
 				emit("*", $3 -> entry -> name, to_string(sizeOfType($$ -> arr -> elementType)), temp -> name);	
 				emit("+", $1 -> arr -> addr -> name, temp -> name, $$ -> arr -> addr -> name);
 			}
 			else	//TODO: verify this
 			{
-                $$-> entry -> type = $1 -> entry -> type -> elementType;
                 emit("*", $3 -> entry -> name, to_string(sizeOfType($$ -> arr -> elementType)), $$ -> arr -> addr -> name);
 				// emit("*", $$ -> addr -> name);
 			}
@@ -176,6 +174,7 @@ postfix_expression : primary_expression
             $$ = new Expression();
 			$$ -> arr = new ArrayExpression();
 			$$ -> entry = SymbolTable::gentemp($1 -> arr -> elementType);
+
             emit("call", $1 -> entry -> name, to_string($3), $$ -> entry -> name);
             currExpr = $$;
         }
@@ -259,6 +258,7 @@ unary_expression : postfix_expression
 			if($1 == AMPERSAND)
 			{
 				$$ -> entry = SymbolTable::gentemp(new SymbolType(POINTER, SIZE_OF_POINTER));
+                $$ -> entry -> type -> elementType = $2 -> arr -> elementType;
 				if($2 -> arr -> type == ARRAY) emit("u[]&", $2 -> entry -> name, $2 -> arr -> addr -> name, $$ -> entry -> name);
                 else emit("u&", $2 -> entry -> name, "", $$ -> entry -> name);
 			}
@@ -266,9 +266,13 @@ unary_expression : postfix_expression
 			{
 				$$ -> arr -> type = POINTER;
 				$$ -> arr -> addr = SymbolTable::gentemp($2 -> entry -> type);
-				$$ -> entry = $2 -> entry;
-                if($2 -> arr -> type == ARRAY) emit("u[]*", $2 -> entry -> name, $2 -> arr -> addr -> name, $$ -> entry -> name);
-                else emit("u*", $2 -> entry -> name, "", $$ -> entry -> name);
+                $$ -> entry = $2 -> entry;
+                if($2 -> arr -> type == ARRAY) emit("u[]*", $2 -> entry -> name, $2 -> arr -> addr -> name, $$ -> arr -> addr -> name);
+                else
+                {
+                    emit("u*", $2 -> entry -> name, "", $$ -> arr -> addr -> name);
+                    $$ -> arr -> addr -> type = $2 -> arr -> elementType -> elementType;
+                }
 			}
 			else if($1 == PLUS)
 			{
@@ -343,7 +347,7 @@ cast_expression : unary_expression
 			$$ = $1;
             currExpr = $$;
 		}
-        | LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET cast_expression              {/* doubt skip */ cerr << "cast_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET cast_expression" << endl; yyerror("Hey there! something is wrong brother cast1\n");}
+        | LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET cast_expression              {$$ = $4; cerr << "cast_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET cast_expression" << endl;}
         ;
 multiplicative_expression : cast_expression
 		{
@@ -367,27 +371,24 @@ multiplicative_expression : cast_expression
         | multiplicative_expression ASTERISK cast_expression //TODO: verify all this
         {
             cerr << "multiplicative_expression -> multiplicative_expression ASTERISK cast_expression" << endl;
-            if(typeCheck($1 -> entry -> type, $3 -> arr -> elementType) == 0) yyerror("Hey there! something is wrong brother multiplicative1\n");
             $$ = new Expression();
-            $$ -> entry = SymbolTable::gentemp($1 -> entry -> type);
+            $$ -> entry = SymbolTable::gentemp(typeCheck($1, $3));
             emit("*", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
             currExpr = $$;
         }
         | multiplicative_expression FORWARD_SLASH cast_expression
         {
             cerr << "multiplicative_expression -> multiplicative_expression FORWARD_SLASH cast_expression" << endl;
-            if(typeCheck($1 -> entry -> type, $3 -> arr -> elementType) == 0) yyerror("Hey there! something is wrong brother multiplicative2\n");
             $$ = new Expression();
-            $$ -> entry = SymbolTable::gentemp($1 -> entry -> type);
+            $$ -> entry = SymbolTable::gentemp(typeCheck($1, $3));
             emit("/", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
             currExpr = $$;
         }
         | multiplicative_expression PERCENT cast_expression
         {
             cerr << "multiplicative_expression -> multiplicative_expression PERCENT cast_expression" << endl;
-            if(typeCheck($1 -> entry -> type, $3 -> arr -> elementType) == 0) yyerror("Hey there! something is wrong brother multiplicative3\n");
             $$ = new Expression();
-            $$ -> entry = SymbolTable::gentemp($1 -> entry -> type);
+            $$ -> entry = SymbolTable::gentemp(typeCheck($1, $3));
             emit("%", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
             currExpr = $$;
         }
@@ -401,20 +402,21 @@ additive_expression : multiplicative_expression
         | additive_expression PLUS multiplicative_expression
 		{
             cerr << "additive_expression -> additive_expression PLUS multiplicative_expression" << endl;
-			if(typeCheck($1 -> entry -> type, $3 -> entry -> type) == 0) yyerror("Hey there! something is wrong brother additive1\n");
-			$$ = new Expression();
+            $$ = new Expression();
 			$$ -> type = INT;
-			$$ -> entry = SymbolTable::gentemp($1 -> entry -> type);	//TODO: check this
+            $1 -> entry -> print();
+            $3 -> entry -> print();
+            cout << endl;
+			$$ -> entry = SymbolTable::gentemp(typeCheck($1, $3));	//TODO: check this
 			emit("+", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
             currExpr = $$;
 		}
         | additive_expression MINUS multiplicative_expression
 		{
             cerr << "additive_expression -> additive_expression MINUS multiplicative_expression" << endl;
-			if(typeCheck($1 -> entry -> type, $3 -> entry -> type) == 0) yyerror("Hey there! something is wrong brother additive2\n");
-			$$ = new Expression();
+            $$ = new Expression();
 			$$ -> type = INT;
-			$$ -> entry = SymbolTable::gentemp($1 -> entry -> type);	//TODO: check this
+			$$ -> entry = SymbolTable::gentemp(typeCheck($1, $3));	//TODO: check this
 			emit("-", $1 -> entry -> name, $3 -> entry -> name, $$ -> entry -> name);
             currExpr = $$;
 		}
@@ -428,7 +430,7 @@ shift_expression : additive_expression
         | shift_expression LEFT_SHIFT additive_expression
 		{
             cerr << "shift_expression -> shift_expression LEFT_SHIFT additive_expression" << endl;
-			if($3 -> entry -> type -> type != INT) yyerror("Hey there! something is wrong brother shift1\n");
+			if($1 -> entry -> type -> type != INT || $3 -> entry -> type -> type != INT) yyerror("<< must have integer arguments\n");
 			$$ = new Expression();
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
@@ -438,7 +440,7 @@ shift_expression : additive_expression
         | shift_expression RIGHT_SHIFT additive_expression
 		{
             cerr << "shift_expression -> shift_expression RIGHT_SHIFT additive_expression" << endl;
-			if($3 -> entry -> type -> type != INT) yyerror("Hey there! something is wrong brother shift2\n");
+			if($1 -> entry -> type -> type != INT || $3 -> entry -> type -> type != INT) yyerror(">> must have integer arguments\n");
 			$$ = new Expression();
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
@@ -455,7 +457,6 @@ relational_expression : shift_expression
         | relational_expression LESS_THAN shift_expression
 		{
             cerr << "relational_expression -> relational_expression LESS_THAN shift_expression" << endl;
-			if(typeCheck($1 -> entry -> type, $3 -> entry -> type) == 0) yyerror("Hey there! something is wrong brother relational1\n");
 			$$ = new Expression();
             // $$ -> entry = $1 -> entry;
 			$$ -> type = BOOL;
@@ -469,7 +470,6 @@ relational_expression : shift_expression
         | relational_expression GREATER_THAN shift_expression
 		{
             cerr << "relational_expression -> relational_expression GREATER_THAN shift_expression" << endl;
-			if(typeCheck($1 -> entry -> type, $3 -> entry -> type) == 0) yyerror("Hey there! something is wrong brother relational2\n");
 			$$ = new Expression();
 			$$ -> type = BOOL;
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
@@ -482,7 +482,6 @@ relational_expression : shift_expression
         | relational_expression LESS_THAN_EQUAL shift_expression
 		{
             cerr << "relational_expression -> relational_expression LESS_THAN_EQUAL shift_expression" << endl;
-			if(typeCheck($1 -> entry -> type, $3 -> entry -> type) == 0) yyerror("Hey there! something is wrong brother relational3\n");
 			$$ = new Expression();
 			$$ -> type = BOOL;
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
@@ -495,7 +494,6 @@ relational_expression : shift_expression
         | relational_expression GREATER_THAN_EQUAL shift_expression
 		{
             cerr << "relational_expression -> relational_expression GREATER_THAN_EQUAL shift_expression" << endl;
-			if(typeCheck($1 -> entry -> type, $3 -> entry -> type) == 0) yyerror("Hey there! something is wrong brother relational4\n");
 			$$ = new Expression();
 			$$ -> type = BOOL;
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
@@ -515,7 +513,6 @@ equality_expression : relational_expression
         | equality_expression EQUAL relational_expression
 		{
             cerr << "equality_expression -> equality_expression EQUAL relational_expression" << endl;
-			if(typeCheck($1 -> entry -> type, $3 -> entry -> type) == 0) yyerror("Hey there! something is wrong brother equality1\n");
 			$$ = new Expression();
 			$$ -> type = BOOL;
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
@@ -528,7 +525,6 @@ equality_expression : relational_expression
         | equality_expression NOT_EQUAL relational_expression
 		{
             cerr << "equality_expression -> equality_expression NOT_EQUAL relational_expression" << endl;
-			if(typeCheck($1 -> entry -> type, $3 -> entry -> type) == 0) yyerror("Hey there! something is wrong brother equality2\n");
 			$$ = new Expression();
 			$$ -> type = BOOL;
             $$ -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
@@ -548,7 +544,7 @@ AND_expression : equality_expression
         | AND_expression AMPERSAND equality_expression
 		{
             cerr << "AND_expression -> AND_expression AMPERSAND equality_expression" << endl;
-			if($1 -> entry -> type -> type != INT || $3 -> entry -> type -> type != INT) yyerror("Hey there! something is wrong brother AND1\n");
+			if($1 -> entry -> type -> type != INT || $3 -> entry -> type -> type != INT) yyerror("& must have integer arguments");
 			$$ = new Expression();
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
@@ -565,7 +561,7 @@ exclusive_OR_expression : AND_expression
         | exclusive_OR_expression CARET AND_expression
 		{
             cerr << "exclusive_OR_expression -> exclusive_OR_expression CARET AND_expression" << endl;
-			if($1 -> entry -> type -> type != INT || $3 -> entry -> type -> type != INT) yyerror("Hey there! something is wrong brother exclusive_OR1\n");
+			if($1 -> entry -> type -> type != INT || $3 -> entry -> type -> type != INT) yyerror("^ must have integer arguments");
 			$$ = new Expression();
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
@@ -582,7 +578,7 @@ inclusive_OR_expression : exclusive_OR_expression
         | inclusive_OR_expression PIPE exclusive_OR_expression
 		{
             cerr << "inclusive_OR_expression -> inclusive_OR_expression PIPE exclusive_OR_expression" << endl;
-			if($1 -> entry -> type -> type != INT || $3 -> entry -> type -> type != INT) yyerror("Hey there! something is wrong brother inclusive_OR1\n");
+			if($1 -> entry -> type -> type != INT || $3 -> entry -> type -> type != INT) yyerror("| must have integer arguments");
 			$$ = new Expression();
 			$$ -> type = INT;
 			$$ -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
@@ -647,10 +643,11 @@ assignment_expression : conditional_expression
         | unary_expression assignment_operator assignment_expression //TODO: verify this may need type checking
 		{
             cerr << "assignment_expression -> unary_expression assignment_operator assignment_expression" << endl;
-			//TODO: check this
+            convertType($1, $3 -> entry -> type, $1 -> arr -> addr -> type);
             if($1 -> arr -> type == ARRAY) emit("[]=",  $1 -> arr -> addr -> name, $3 -> entry -> name, $1 -> entry -> name);
             else if($1 -> arr -> type == POINTER) emit("*=", $3 -> entry -> name, "", $1 -> entry -> name);
             else emit("=",$3 -> entry -> name, "",$1 -> entry -> name);
+            $$ = $1;
             currExpr = $$;
         }
         ;
@@ -867,7 +864,10 @@ direct_declarator : IDENTIFIER
             funcTable -> name = "$function_" + $1 -> name;
             $1 -> nestedTable = funcTable;
             // funcTable -> print();           //TODO: free the lost table
-            $1 -> update(new SymbolType(FUNCTION));
+            SymbolType *temp = new SymbolType($1 -> type -> type, 0, $1 -> type -> elementType);
+            $1 -> update(new SymbolType(FUNCTION, SIZE_OF_FUNCTION, temp));
+            // $1 -> type -> elementType -> print();
+            // cout << $1 -> name << endl;
             currSymbol = $1;
             $$ = $1;
         }
@@ -880,7 +880,7 @@ direct_declarator : IDENTIFIER
             currST -> table.pop_back();
             funcTable -> name = "$function_" + $1 -> name;
             $1 -> nestedTable = funcTable;
-            $1 -> update(new SymbolType(FUNCTION));
+            $1 -> update(new SymbolType(FUNCTION, SIZE_OF_FUNCTION, $1 -> type));
             currSymbol = $1;
             $$ = $1;
         }
@@ -1107,7 +1107,7 @@ iteration_statement : WHILE M LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET 
             $$ = new Statement();
             $$ -> nextlist = $7 -> falselist;
         }
-        | FOR LEFT_ROUND_BRACKET expression_opt SEMICOLON M expression_opt SEMICOLON FN CB M expression_opt N RIGHT_ROUND_BRACKET M statement
+        | FOR LEFT_ROUND_BRACKET expression_opt SEMICOLON M expression_opt SEMICOLON FN CB M expression_opt N1 RIGHT_ROUND_BRACKET M statement
         {
             cerr << "iteration_statement -> FOR LEFT_ROUND_BRACKET expression_opt SEMICOLON M expression_opt SEMICOLON M expression_opt N RIGHT_ROUND_BRACKET M statement" << endl;
             if($6) convertToBool($6);
@@ -1145,7 +1145,7 @@ external_declaration : function_definition              {/* skip */ cerr << "ext
 function_definition : declaration_specifiers declarator declaration_list_opt CTF LEFT_CURLY_BRACKET block_item_list_opt RIGHT_CURLY_BRACKET
         {
             cerr << "function_definition -> declaration_specifiers declarator declaration_list_opt compound_statement" << endl;
-            if(quadTable -> arr.back() -> op != "return") emit("return", "", "", "");
+            if(quadTable -> arr.back() -> op != "return") yyerror("Reached end of function without return statement");
             switchTable(globalST);
         }
         ;
@@ -1163,6 +1163,13 @@ M : /* epsilon */
         }
         ;
 N : /* epsilon */
+        {
+            $$ = new Statement();
+            $$ -> nextlist = makelist(nextinstr());
+            emit("goto", "", "", "__");
+        }
+        ;
+N1 : /* epsilon */
         {
             if(currExprFor) {
                 $$ = new Statement();

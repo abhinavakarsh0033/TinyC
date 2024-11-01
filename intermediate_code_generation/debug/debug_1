@@ -198,6 +198,28 @@ expression_statement -> expression_opt SEMICOLON
 statement -> expression_statement
 block_item -> statement
 block_item_list -> block_item_list M block_item
+primary_expression -> INTEGER_CONSTANT
+postfix_expression -> primary_expression
+unary_expression -> postfix_expression
+cast_expression -> unary_expression
+multiplicative_expression -> cast_expression
+additive_expression -> multiplicative_expression
+shift_expression -> additive_expression
+relational_expression -> shift_expression
+equality_expression -> relational_expression
+AND_expression -> equality_expression
+exclusive_OR_expression -> AND_expression
+inclusive_OR_expression -> exclusive_OR_expression
+logical_AND_expression -> inclusive_OR_expression
+logical_OR_expression -> logical_AND_expression
+conditional_expression -> logical_OR_expression
+assignment_expression -> conditional_expression
+expression -> assignment_expression
+expression_opt -> expression
+jump_statement -> RETURN expression_opt SEMICOLON
+statement -> jump_statement
+block_item -> statement
+block_item_list -> block_item_list M block_item
 block_item_list_opt -> block_item_list
 function_definition -> declaration_specifiers declarator declaration_list_opt compound_statement
 external_declaration -> function_definition
@@ -309,6 +331,11 @@ expression_statement -> expression_opt SEMICOLON
 statement -> expression_statement
 block_item -> statement
 block_item_list -> block_item
+expression_opt -> epsilon
+jump_statement -> RETURN expression_opt SEMICOLON
+statement -> jump_statement
+block_item -> statement
+block_item_list -> block_item_list M block_item
 block_item_list_opt -> block_item_list
 function_definition -> declaration_specifiers declarator declaration_list_opt compound_statement
 external_declaration -> function_definition

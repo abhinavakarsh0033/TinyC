@@ -1,0 +1,126 @@
+$0	float	1e9	8	0	No
+$1	int	7	4	0	No
+
+************************************************Quadruple Table***********************************************************
+1:		$0	=	1e9
+2:		$1	=	7
+3:			=	$1	int2float	
+4:		$2	=	$0	+	$1
+5:		M	=	$2
+6:	binpow_iterative:
+7:		$3	=	1
+8:		res	=	$3
+9:		$4	=	0
+10:		if	b > $4	goto	12
+11:		goto	25
+12:		$6	=	1
+13:		$7	=	b	&	$6
+14:		ifFalse	$7 == 0	goto	16
+15:		goto	19
+16:		$8	=	res	*	a
+17:		$9	=	$8	%	M
+18:		res	=	$9
+19:		$10	=	a	*	a
+20:		$11	=	$10	%	M
+21:		a	=	$11
+22:		$12	=	1
+23:		b	=	$12
+24:		goto	9
+25:		return	res
+
+26:	binpow_recursive:
+27:		$13	=	0
+28:		if	b == $13	goto	30
+29:		goto	32
+30:		$15	=	1
+31:		return	$15
+
+32:		param	a
+33:		$16	=	2
+34:		$17	=	b	/	$16
+35:		param	$17
+36:		$18	=	call	binpow_recursive	2
+37:		res	=	$18
+38:		$19	=	res	*	res
+39:		$20	=	$19	%	M
+40:		res	=	$20
+41:		$21	=	1
+42:		$22	=	b	&	$21
+43:		ifFalse	$22 == 0	goto	45
+44:		goto	48
+45:		$23	=	res	*	a
+46:		$24	=	$23	%	M
+47:		res	=	$24
+48:		return	res
+
+49:	main:
+50:		$25	=	2
+51:		a	=	$25
+52:		$26	=	10
+53:		b	=	$26
+54:		param	a
+55:		param	b
+56:		$27	=	call	binpow_iterative	2
+57:		c	=	$27
+58:		param	a
+59:		param	b
+60:		$28	=	call	binpow_recursive	2
+61:		d	=	$28
+62:		$29	=	0
+63:		return	$29
+
+
+		Global SYMBOL TABLE		Parent : NULL
+M	int		4	0	No
+$0	float	1e9	8	4	No
+$1	float	7	8	12	No
+$2	float		8	20	No
+binpow_iterative	function		0	28	Yes
+binpow_recursive	function		0	81	Yes
+main	function		0	134	Yes
+
+		$function_binpow_iterative SYMBOL TABLE		Parent : Global
+a	int		4	28	No
+b	int		4	32	No
+res	int	1	4	36	No
+$3	int	1	4	40	No
+$4	int	0	4	44	No
+$5	bool		1	48	No
+$function_binpow_iterative_Block0	int		4	49	Yes
+
+		$function_binpow_iterative_Block0 SYMBOL TABLE		Parent : $function_binpow_iterative
+$6	int	1	4	53	No
+$7	int		4	57	No
+$8	int		4	61	No
+$9	int		4	65	No
+$10	int		4	69	No
+$11	int		4	73	No
+$12	int	1	4	77	No
+
+		$function_binpow_recursive SYMBOL TABLE		Parent : Global
+a	int		4	81	No
+b	int		4	85	No
+$13	int	0	4	89	No
+$14	bool		1	93	No
+$15	int	1	4	94	No
+res	int		4	98	No
+$16	int	2	4	102	No
+$17	int		4	106	No
+$18	function		0	110	No
+$19	int		4	110	No
+$20	int		4	114	No
+$21	int	1	4	118	No
+$22	int		4	122	No
+$23	int		4	126	No
+$24	int		4	130	No
+
+		$function_main SYMBOL TABLE		Parent : Global
+a	int	2	4	134	No
+$25	int	2	4	138	No
+b	int	10	4	142	No
+$26	int	10	4	146	No
+c	int		4	150	No
+$27	function		0	154	No
+d	int		4	154	No
+$28	function		0	158	No
+$29	int	0	4	158	No

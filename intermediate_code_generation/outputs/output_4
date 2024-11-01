@@ -1,0 +1,192 @@
+start	int		4	0	No
+end	int		4	0	No
+
+mid	int		4	0	No
+$5	int	1	4	0	No
+
+mid	int		4	0	No
+$10	int	1	4	0	No
+
+************************************************Quadruple Table***********************************************************
+1:	merge_sort:
+2:		if	start < end	goto	4
+3:		goto	23
+4:		$1	=	start	+	end
+5:		$2	=	2
+6:		$3	=	$1	/	$2
+7:		mid	=	$3
+8:		param	A
+9:		param	start
+10:		param	mid
+11:		$4	=	call	merge_sort	3
+12:		param	A
+13:		$5	=	1
+14:		$6	=	mid	+	$5
+15:		param	$6
+16:		param	end
+17:		$7	=	call	merge_sort	3
+18:		param	A
+19:		param	start
+20:		param	mid
+21:		param	end
+22:		$8	=	call	merge	4
+23:		return	
+
+24:		$9	=	100
+25:	merge:
+26:		p	=	start
+27:		$10	=	1
+28:		$11	=	mid	+	$10
+29:		q	=	$11
+30:		$12	=	100
+31:		$13	=	0
+32:		k	=	$13
+33:		i	=	start
+34:		if	i <= end	goto	39
+35:		goto	85
+36:		$15	=	i
+37:		i	=	i	+	1
+38:		goto	34
+39:		if	p > mid	goto	41
+40:		goto	50
+41:		$17	=	k
+42:		k	=	k	+	1
+43:		$18	=	$17	*	4
+44:		$19	=	q
+45:		q	=	q	+	1
+46:		$20	=	$19	*	4
+47:		$21	=	A[$20]
+48:		Arr[$18]	=	$21
+49:		goto	36
+50:		if	q > end	goto	52
+51:		goto	61
+52:		$23	=	k
+53:		k	=	k	+	1
+54:		$24	=	$23	*	4
+55:		$25	=	p
+56:		p	=	p	+	1
+57:		$26	=	$25	*	4
+58:		$27	=	A[$26]
+59:		Arr[$24]	=	$27
+60:		goto	36
+61:		$28	=	p	*	4
+62:		$29	=	A[$28]
+63:		$30	=	q	*	4
+64:		$31	=	A[$30]
+65:		if	$29 < $31	goto	67
+66:		goto	76
+67:		$33	=	k
+68:		k	=	k	+	1
+69:		$34	=	$33	*	4
+70:		$35	=	p
+71:		p	=	p	+	1
+72:		$36	=	$35	*	4
+73:		$37	=	A[$36]
+74:		Arr[$34]	=	$37
+75:		goto	36
+76:		$38	=	k
+77:		k	=	k	+	1
+78:		$39	=	$38	*	4
+79:		$40	=	q
+80:		q	=	q	+	1
+81:		$41	=	$40	*	4
+82:		$42	=	A[$41]
+83:		Arr[$39]	=	$42
+84:		goto	36
+85:		$43	=	0
+86:		p	=	$43
+87:		if	p < k	goto	92
+88:		goto	99
+89:		$45	=	p
+90:		p	=	p	+	1
+91:		goto	87
+92:		$46	=	start
+93:		start	=	start	+	1
+94:		$47	=	$46	*	4
+95:		$48	=	p	*	4
+96:		$49	=	Arr[$48]
+97:		A[$47]	=	$49
+98:		goto	89
+99:		return	
+
+
+		Global SYMBOL TABLE		Parent : NULL
+merge_sort	function		0	0	Yes
+merge	function		0	49	Yes
+
+		$function_merge_sort SYMBOL TABLE		Parent : Global
+A	int*		4	0	No
+start	int		4	4	No
+end	int		4	8	No
+$0	bool		1	12	No
+$function_merge_sort_Block0	int		4	13	Yes
+
+		$function_merge_sort_Block0 SYMBOL TABLE		Parent : $function_merge_sort
+mid	int		4	17	No
+$1	int		4	21	No
+$2	int	2	4	25	No
+$3	int		4	29	No
+$4	function		0	33	No
+$5	int	1	4	33	No
+$6	int		4	37	No
+$7	function		0	41	No
+merge	int		4	41	No
+$8	int		4	45	No
+
+		$function_merge SYMBOL TABLE		Parent : Global
+A	array(100, int)		400	49	No
+$9	int	100	4	449	No
+start	int		4	453	No
+mid	int		4	457	No
+end	int		4	461	No
+p	int		4	465	No
+q	int		4	469	No
+$10	int	1	4	473	No
+$11	int		4	477	No
+Arr	array(100, int)		400	481	No
+$12	int	100	4	881	No
+k	int	0	4	885	No
+$13	int	0	4	889	No
+i	int		4	893	No
+$14	bool		1	897	No
+$15	int		4	898	No
+$function_merge_Block0	int		4	902	Yes
+$43	int	0	4	1005	No
+$44	bool		1	1009	No
+$45	int		4	1010	No
+$function_merge_Block1	int		4	1014	Yes
+
+		$function_merge_Block0 SYMBOL TABLE		Parent : $function_merge
+$16	bool		1	906	No
+$17	int		4	907	No
+$18	int		4	911	No
+$19	int		4	915	No
+$20	int		4	919	No
+$21	int		4	923	No
+$22	bool		1	927	No
+$23	int		4	928	No
+$24	int		4	932	No
+$25	int		4	936	No
+$26	int		4	940	No
+$27	int		4	944	No
+$28	int		4	948	No
+$29	int		4	952	No
+$30	int		4	956	No
+$31	int		4	960	No
+$32	bool		1	964	No
+$33	int		4	965	No
+$34	int		4	969	No
+$35	int		4	973	No
+$36	int		4	977	No
+$37	int		4	981	No
+$38	int		4	985	No
+$39	int		4	989	No
+$40	int		4	993	No
+$41	int		4	997	No
+$42	int		4	1001	No
+
+		$function_merge_Block1 SYMBOL TABLE		Parent : $function_merge
+$46	int		4	1018	No
+$47	int		4	1022	No
+$48	int		4	1026	No
+$49	int		4	1030	No

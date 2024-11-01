@@ -1,20 +1,40 @@
+$8	float		8	0	No
+c	int	1	4	0	No
+
 ************************************************Quadruple Table***********************************************************
 1:	main:
 2:		$0	=	10
-3:		$1	=	0
-4:		$2	=	$1	*	4
-5:		$3	=	-arr[$2]
-6:		b	=	$3
-7:		return	
+3:		$1	=	20
+4:		$2	=	1
+5:		c	=	$2
+6:		$3	=	1
+7:		$4	=	$3	*	160
+8:		$5	=	2
+9:		$7	=	$5	*	8
+10:		$6	=	$4	+	$7
+11:		$8	=	arr[$6]
+12:			=	c	int2float	
+13:		$9	=	$8	+	c
+14:		b	=	$9
+15:		$10	=	0
+16:		return	$10
 
 
 		Global SYMBOL TABLE		Parent : NULL
 main	function		0	0	Yes
 
 		$function_main SYMBOL TABLE		Parent : Global
-arr	int		4	0	No
-$0	int	10	4	4	No
-b	int		4	8	No
-$1	int	0	4	12	No
-$2	int		4	16	No
-$3	int		4	20	No
+arr	array(10, array(20, float))		1600	0	No
+$0	int	10	4	1600	No
+$1	int	20	4	1604	No
+c	float	1	8	1608	No
+$2	int	1	4	1616	No
+b	int		4	1620	No
+$3	int	1	4	1624	No
+$4	int		4	1628	No
+$5	int	2	4	1632	No
+$6	int		4	1636	No
+$7	int		4	1640	No
+$8	float		8	1644	No
+$9	float		8	1652	No
+$10	int	0	4	1660	No

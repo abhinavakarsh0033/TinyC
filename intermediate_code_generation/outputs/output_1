@@ -1,3 +1,6 @@
+x	int		4	0	No
+y	int		4	0	No
+
 ************************************************Quadruple Table***********************************************************
 1:	main:
 2:		$0	=	10
@@ -9,16 +12,17 @@
 8:		$2	=	call	fx	2
 9:		e	=	$2
 10:		$3	=	call	foo	0
-11:		return	
+11:		$4	=	0
+12:		return	$4
 
-12:	fx:
-13:		$4	=	x	+	y
-14:		return	$4
+13:	fx:
+14:		$5	=	x	+	y
+15:		return	$5
 
-15:	foo:
-16:		param	$5
-17:		$6	=	call	printf	1
-18:		return	
+16:	foo:
+17:		param	$6
+18:		$7	=	call	printf	1
+19:		return	
 
 
 		Global SYMBOL TABLE		Parent : NULL
@@ -28,13 +32,13 @@ main	function		0	35	Yes
 
 		$function_foo SYMBOL TABLE		Parent : Global
 printf	int		4	0	No
-$5	array(15, char)	"Hello World\n"	15	4	No
-$6	int		4	19	No
+$6	array(15, char)	"Hello World\n"	15	4	No
+$7	int		4	19	No
 
 		$function_fx SYMBOL TABLE		Parent : Global
 x	int		4	23	No
 y	int		4	27	No
-$4	int		4	31	No
+$5	int		4	31	No
 
 		$function_main SYMBOL TABLE		Parent : Global
 c	int	10	4	35	No
@@ -44,3 +48,4 @@ $1	int	20	4	47	No
 e	int		4	51	No
 $2	function		0	55	No
 $3	function		0	55	No
+$4	int	0	4	55	No

@@ -8,6 +8,7 @@ int main() {
     int d = 20;
     int e = fx(c, d);
     foo();
+    return 0;
 }
 
 int fx(int x, int y) {
@@ -16,4 +17,5 @@ int fx(int x, int y) {
 
 void foo() {
     printf("Hello World\n");
+    return;
 }

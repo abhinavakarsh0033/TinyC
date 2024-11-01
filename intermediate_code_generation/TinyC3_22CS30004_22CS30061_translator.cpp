@@ -282,13 +282,95 @@ int sizeOfType(SymbolType *type) {
     return 0;
 }
 
-bool typeCheck(SymbolType *t1, SymbolType *t2) {
-    while(t1 -> type == ARRAY) t1 = t1 -> elementType;
-    while(t2 -> type == ARRAY) t2 = t2 -> elementType;
-    int type1 = t1 -> type;
-    int type2 = t2 -> type;
-    // int + float may be allowed
-    return type1 == type2; // TODO: Review
+// bool typeCheck(SymbolType *t1, SymbolType *t2) {
+//     while(t1 -> type == ARRAY) t1 = t1 -> elementType;
+//     while(t2 -> type == ARRAY) t2 = t2 -> elementType;
+//     int type1 = t1 -> type;
+//     int type2 = t2 -> type;
+//     if(type1 == INT && (type2 == FLOAT || type2 == CHAR)) return 1;
+//     if(type1 == FLOAT && (type2 == INT || type2 == CHAR)) return 1;
+//     if(type1 == CHAR && (type2 == INT || type2 == FLOAT)) return 1;
+//     // int + float may be allowed
+//     return type1 == type2; // TODO: Review
+// }
+
+SymbolType *typeCheck(Expression *E1, Expression *E2) {
+    SymbolType *t1 = E1 -> entry -> type;
+    if(E1 -> arr != NULL) t1 = E1 -> arr -> elementType;
+    SymbolType *t2 = E2 -> entry -> type;
+    if(E2 -> arr != NULL) t2 = E2 -> arr -> elementType;
+    if(t1 -> type == t2 -> type) return t1;
+    else if(t1 -> type == INT) {
+        if(t2 -> type == FLOAT) {
+            convertType(E1, t1, t2);
+            return t2;
+        }
+        else if(t2 -> type == CHAR) {
+            convertType(E2, t2, t1);
+            return t1;
+        }
+    }
+    else if(t1 -> type == FLOAT) {
+        if(t2 -> type == INT) {
+            convertType(E2, t2, t1);
+            return t1;
+        }
+        else if(t2 -> type == CHAR) {
+            convertType(E2, t2, t1);
+            return t1;
+        }
+    }
+    else if(t1 -> type == CHAR) {
+        if(t2 -> type == INT) {
+            convertType(E1, t1, t2);
+            return t2;
+        }
+        else if(t2 -> type == FLOAT) {
+            convertType(E2, t1, t2);
+            return t2;
+        }
+    }
+    else yyerror("Type mismatch");
+    return NULL;
+}
+
+void convertType(Expression *expr, SymbolType *from, SymbolType *to) {
+    if(from -> type == to -> type) return;
+    if(from -> type == INT && to -> type == FLOAT) {
+        emit("int2float", expr -> entry -> name, "", "");
+        expr -> entry -> type  = to;
+        return;
+    }
+    else if(from -> type == FLOAT && to -> type == INT) {
+        emit("float2int", expr -> entry -> name, "", "");
+        expr -> entry -> type = to;
+        return;
+    }
+    else if(from -> type == CHAR && to -> type == INT) {
+        emit("char2int", expr -> entry -> name, "", "");
+        expr -> entry -> type = to;
+        return;
+    }
+    else if(from -> type == INT && to -> type == CHAR) {
+        emit("int2char", expr -> entry -> name, "", "");
+        expr -> entry -> type = to;
+        return;
+    }
+    else if(from -> type == CHAR && to -> type == FLOAT) {
+        emit("char2int", expr -> entry -> name, "", "");
+        emit("int2float", expr -> entry -> name, "", "");
+        expr -> entry -> type = to;
+        return;
+    }
+    else if(from -> type == FLOAT && to -> type == CHAR) {
+        emit("float2int", expr -> entry -> name, "", "");
+        emit("int2char", expr -> entry -> name, "", "");
+        expr -> entry -> type = to;
+        return;
+    }
+    cerr << from -> type << " " << to -> type << endl;
+    yyerror("Type mismatch");
+    return;
 }
 
 int main() {

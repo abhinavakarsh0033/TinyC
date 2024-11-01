@@ -1,0 +1,100 @@
+************************************************Quadruple Table***********************************************************
+1:	swap:
+2:		$0	=	*a
+3:		temp	=	$0
+4:		$1	=	*a
+5:		temp	=	$1
+6:		$2	=	*a
+7:		$3	=	*b
+8:		*a	=	$3
+9:		$4	=	*b
+10:		*b	=	temp
+11:		return	
+
+12:	main:
+13:		$5	=	10
+14:		$6	=	20
+15:		$7	=	0
+16:		$8	=	$7	*	80
+17:		$9	=	1
+18:		$11	=	$9	*	4
+19:		$10	=	$8	+	$11
+20:		$12	=	&arr[$10]
+21:		param	$12
+22:		$13	=	1
+23:		$14	=	$13	*	80
+24:		$15	=	2
+25:		$17	=	$15	*	4
+26:		$16	=	$14	+	$17
+27:		$18	=	&arr[$16]
+28:		param	$18
+29:		$19	=	call	swap	2
+30:		$20	=	&a
+31:		x	=	$20
+32:		$21	=	0
+33:		$22	=	$21	*	80
+34:		$23	=	1
+35:		$25	=	$23	*	4
+36:		$24	=	$22	+	$25
+37:		$26	=	arr[$24]
+38:		x	=	$26
+39:		$27	=	5
+40:		c	=	$27
+41:		$28	=	&a
+42:		param	$28
+43:		param	b
+44:		$29	=	call	swap	2
+45:		$30	=	*c
+46:		d	=	$30
+47:		$31	=	0
+48:		return	$31
+
+
+		Global SYMBOL TABLE		Parent : NULL
+swap	function		0	0	Yes
+main	function		0	32	Yes
+
+		$function_swap SYMBOL TABLE		Parent : Global
+a	int*		4	0	No
+b	int*		4	4	No
+temp	int		4	8	No
+$0	int		4	12	No
+$1	int		4	16	No
+$2	int		4	20	No
+$3	int		4	24	No
+$4	int		4	28	No
+
+		$function_main SYMBOL TABLE		Parent : Global
+arr	array(10, array(20, int))		800	32	No
+$5	int	10	4	832	No
+$6	int	20	4	836	No
+$7	int	0	4	840	No
+$8	int		4	844	No
+$9	int	1	4	848	No
+$10	int		4	852	No
+$11	int		4	856	No
+$12	int*		4	860	No
+$13	int	1	4	864	No
+$14	int		4	868	No
+$15	int	2	4	872	No
+$16	int		4	876	No
+$17	int		4	880	No
+$18	int*		4	884	No
+$19	function		0	888	No
+x	int		4	888	No
+a	int		4	892	No
+$20	int*		4	896	No
+$21	int	0	4	900	No
+$22	int		4	904	No
+$23	int	1	4	908	No
+$24	int		4	912	No
+$25	int		4	916	No
+$26	int		4	920	No
+b	int		4	924	No
+c	float*	5	4	928	No
+$27	int	5	4	932	No
+$28	int*		4	936	No
+$29	function		0	940	No
+d	int		4	940	No
+$30	float		8	944	No
+$31	int	0	4	952	No

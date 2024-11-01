@@ -150,4 +150,6 @@ vector<int> merge(vector<int> a, vector<int> b);
 
 int sizeOfType(SymbolType *type);
 
-bool typeCheck(SymbolType *t1, SymbolType *t2);
+SymbolType *typeCheck(Expression *E1, Expression *E2);
+
+void convertType(Expression *expr, SymbolType *from, SymbolType *to);

@@ -56,7 +56,7 @@ void yyerror(string s);
 //5. Marker Non Terminals
 %type <inst> M CB 
 %type <stmt> N
-%type CT FN
+%type CT FN CTF
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -115,7 +115,7 @@ primary_expression : IDENTIFIER
             $$ = new Expression();
             $$ -> entry = $1;
             $$ -> type = INT;                                            //TODO: fill this
-            $$ -> entry -> type = new SymbolType(ARRAY, ($1 -> value).size(), new SymbolType(CHAR, SIZE_OF_CHAR));
+            $$ -> entry = $1;
             currExpr = $$;
         }
         | LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET
@@ -157,12 +157,12 @@ postfix_expression : primary_expression
 			{
 				Symbol *temp = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));
 				//sizeOfType recusively calculates the size of the arr
-				emit("*", $3 -> entry -> name, to_string(sizeOfType($1 -> arr -> elementType)), temp -> name);	
+				emit("*", $3 -> entry -> name, to_string(sizeOfType($$ -> arr -> elementType)), temp -> name);	
 				emit("+", $1 -> arr -> addr -> name, temp -> name, $$ -> arr -> addr -> name);
 			}
 			else	//TODO: verify this
 			{
-                emit("*", $3 -> entry -> name, to_string(sizeOfType($1 -> arr -> elementType)), $$ -> arr -> addr -> name);
+                emit("*", $3 -> entry -> name, to_string(sizeOfType($$ -> arr -> elementType)), $$ -> arr -> addr -> name);
 				// emit("*", $$ -> addr -> name);
 			}
             currExpr = $$;
@@ -185,7 +185,6 @@ postfix_expression : primary_expression
 			$$ = new Expression();
 			$$ -> arr = new ArrayExpression();
 			$$ -> entry = SymbolTable::gentemp($1 -> entry -> type);
-            cout << $$ -> entry -> name << endl;
 			emit("=", $1 -> entry -> name, "", $$ -> entry -> name);
 			emit("+", $1 -> entry -> name, "1", $1 -> entry -> name);
             currExpr = $$;
@@ -591,7 +590,6 @@ logical_AND_expression : inclusive_OR_expression
         | logical_AND_expression LOGICAL_AND CB M inclusive_OR_expression
 		{
             cerr << "logical_AND_expression -> logical_AND_expression LOGICAL_AND M inclusive_OR_expression" << endl;
-			cerr << $1 -> type << endl;
             convertToBool($1);
 			convertToBool($5);
 			backpatch($1 -> truelist, $4);
@@ -851,24 +849,31 @@ direct_declarator : IDENTIFIER
         | direct_declarator LEFT_SQUARE_BRACKET STATIC type_qualifier_list_opt assignment_expression RIGHT_SQUARE_BRACKET           {/* skip */ cerr << "direct_declarator -> direct_declarator LEFT_SQUARE_BRACKET STATIC type_qualifier_list_opt assignment_expression RIGHT_SQUARE_BRACKET" << endl; yyerror("Hey there! something is wrong brother direct_declarator2\n");}
         | direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list STATIC assignment_expression RIGHT_CURLY_BRACKET                {/* skip */ cerr << "direct_declarator -> direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list STATIC assignment_expression RIGHT_CURLY_BRACKET" << endl; yyerror("Hey there! something is wrong brother direct_declarator2\n");}
         | direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list_opt ASTERISK RIGHT_SQUARE_BRACKET                               {/* doubt skip */ cerr << "direct_declarator -> direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list_opt ASTERISK RIGHT_SQUARE_BRACKET" << endl; yyerror("Hey there! something is wrong brother direct_declarator2\n");}
-        | direct_declarator CT LEFT_ROUND_BRACKET parameter_type_list RIGHT_ROUND_BRACKET
+        | direct_declarator LEFT_ROUND_BRACKET CT parameter_type_list RIGHT_ROUND_BRACKET
         {
-            cerr << "direct_declarator -> direct_declarator CT LEFT_ROUND_BRACKET parameter_type_list RIGHT_ROUND_BRACKET" << endl;
-            // TODO: rememeber return type
-            $1 -> nestedTable = currST;
-            // currST -> parent = globalST;
-            // switchTable(globalST);
+            cerr << "direct_declarator -> direct_declarator LEFT_ROUND_BRACKET CT parameter_type_list RIGHT_ROUND_BRACKET" << endl;
+            SymbolTable *funcTable = currST;
+            switchTable(currST -> parent);
+            currST -> table.pop_back();
+            funcTable -> name = "$function_" + $1 -> name;
+            $1 -> nestedTable = funcTable;
+            // funcTable -> print();           //TODO: free the lost table
+            $1 -> update(new SymbolType(FUNCTION));
+            currSymbol = $1;
             $$ = $1;
         }
-        | direct_declarator CT LEFT_ROUND_BRACKET identifier_list_opt RIGHT_ROUND_BRACKET
+        | direct_declarator LEFT_ROUND_BRACKET CT identifier_list_opt RIGHT_ROUND_BRACKET
         {
-            cerr << "direct_declarator -> direct_declarator CT LEFT_ROUND_BRACKET identifier_list_opt RIGHT_ROUND_BRACKET" << endl;
+            cerr << "direct_declarator -> direct_declarator LEFT_ROUND_BRACKET CT identifier_list_opt RIGHT_ROUND_BRACKET" << endl;
             if($4 != NULL) yyerror("Hey there! something is wrong brother direct_declarator2\n");
-            $1 -> nestedTable = currST;
-            // currST -> parent = globalST;
-            // switchTable(globalST);
+            SymbolTable *funcTable = currST;
+            switchTable(currST -> parent);
+            currST -> table.pop_back();
+            funcTable -> name = "$function_" + $1 -> name;
+            $1 -> nestedTable = funcTable;
+            $1 -> update(new SymbolType(FUNCTION));
+            currSymbol = $1;
             $$ = $1;
-            
         }
         ;
 pointer : ASTERISK type_qualifier_list_opt
@@ -1007,10 +1012,11 @@ labeled_statement : IDENTIFIER COLON statement              {/* skip */ cerr << 
         | CASE constant_expression COLON statement          {/* skip */ cerr << "labeled_statement -> CASE constant_expression COLON statement" << endl;}
         | DEFAULT COLON statement                           {/* skip */ cerr << "labeled_statement -> DEFAULT COLON statement" << endl;}
         ;
-compound_statement : LEFT_CURLY_BRACKET block_item_list_opt RIGHT_CURLY_BRACKET
+compound_statement : LEFT_CURLY_BRACKET CT block_item_list_opt RIGHT_CURLY_BRACKET
         {
-            cerr << "compound_statement -> LEFT_CURLY_BRACKET block_item_list_opt RIGHT_CURLY_BRACKET" << endl;
-            $$ = $2;
+            cerr << "compound_statement -> LEFT_CURLY_BRACKET CT block_item_list_opt RIGHT_CURLY_BRACKET" << endl;
+            $$ = $3;
+            switchTable(currST -> parent);
         }
         ;
 block_item_list_opt : /* epsilon */
@@ -1051,17 +1057,14 @@ expression_statement : expression_opt SEMICOLON
         {
             cerr << "expression_statement -> expression_opt SEMICOLON" << endl;
             $$ = new Statement();
-            $$ -> nextlist = $1 -> nextlist; /* BEWARE : $1 may be null */
+            if($1) $$ -> nextlist = $1 -> nextlist; /* BEWARE : $1 may be null */
         }
         ;
 selection_statement : IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET CB M statement %prec LOWER_THAN_ELSE    //TODO: verify this
         {
             cerr << "selection_statement -> IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET M statement" << endl;
-            // for(auto x: $3 -> truelist) cout << x+1 << " "; cout << endl;
-            // for(auto x: $3 -> falselist) cout << x+1 << " "; cout << endl;
             convertToBool($3);
             backpatch($3 -> truelist, $6);
-            cout << $6 << endl;
             $$ = new Statement();
             $$ -> nextlist = merge($3 -> falselist, $7 -> nextlist);
         }
@@ -1116,7 +1119,7 @@ jump_statement : GOTO IDENTIFIER SEMICOLON              {/* skip */ cerr << "jum
         {
             cerr << "jump_statement -> RETURN expression_opt SEMICOLON" << endl;
             $$ = new Statement();
-            if($2 -> entry)
+            if($2)
                 emit("return", $2 -> entry -> name, "", "");
             else
                 emit("return", "", "", "");
@@ -1130,11 +1133,15 @@ translation_unit : external_declaration                 {/* skip */ cerr << "tra
 external_declaration : function_definition              {/* skip */ cerr << "external_declaration -> function_definition" << endl;}
         | declaration                                   {/* skip */ cerr << "external_declaration -> declaration" << endl;}
         ;
-function_definition : declaration_specifiers declarator declaration_list_opt compound_statement
+function_definition : declaration_specifiers declarator declaration_list_opt CTF compound_statement
         {
             cerr << "function_definition -> declaration_specifiers declarator declaration_list_opt compound_statement" << endl;
-            // currST -> parent = globalST;
-            // switchTable(globalST);
+            SymbolTable *child = currST -> table.back() -> nestedTable;
+            SymbolTable *funcTable = currST -> lookup($2 -> name) -> nestedTable;
+            currST -> table.pop_back();
+            for(Symbol *s: child -> table) funcTable -> table.push_back(s);
+            if(quadTable -> arr.back() -> op != "return") emit("return", "", "", "");
+            switchTable(globalST);
         }
         ;
 declaration_list : declaration                                                                          {/* skip */ cerr << "declaration_list -> declaration" << endl;}
@@ -1162,9 +1169,14 @@ N : /* epsilon */
         ;
 CT : /* epsilon */
         {
-            
+            addNestedTable(currST);
         }
         ;
+CTF : /* epsilon */
+        {
+            emit("label", currSymbol -> name, "", "");
+            currST = currSymbol -> nestedTable;
+        }
 CB : /* epsilon */
         {
             convertToBool(currExpr);

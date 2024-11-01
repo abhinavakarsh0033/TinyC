@@ -142,7 +142,7 @@ single_line_comment     \/\/.*
 {integer_constant}      {yylval.symbolptr = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT)); yylval.symbolptr -> value = yytext; return INTEGER_CONSTANT;}
 {floating_constant}     {yylval.symbolptr = SymbolTable::gentemp(new SymbolType(FLOAT, SIZE_OF_FLOAT)); yylval.symbolptr -> value = yytext; return FLOATING_CONSTANT;}
 {character_constant}    {yylval.symbolptr = SymbolTable::gentemp(new SymbolType(CHAR, SIZE_OF_CHAR)); yylval.symbolptr -> value = yytext; return CHARACTER_CONSTANT;}
-{string_literal}        {yylval.symbolptr = SymbolTable::gentemp(new SymbolType(ARRAY, strlen(yytext), new SymbolType(CHAR, SIZE_OF_CHAR))); return STRING_LITERAL;}
+{string_literal}        {yylval.symbolptr = SymbolTable::gentemp(new SymbolType(ARRAY, strlen(yytext), new SymbolType(CHAR, SIZE_OF_CHAR))); yylval.symbolptr -> value = yytext; return STRING_LITERAL;}
 .                       {return ERROR;}
 
 %%

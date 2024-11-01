@@ -1389,7 +1389,7 @@ YY_RULE_SETUP
 case 91:
 YY_RULE_SETUP
 #line 145 "TinyC3_22CS30004_22CS30061.l"
-{yylval.symbolptr = SymbolTable::gentemp(new SymbolType(ARRAY, strlen(yytext), new SymbolType(CHAR, SIZE_OF_CHAR))); return STRING_LITERAL;}
+{yylval.symbolptr = SymbolTable::gentemp(new SymbolType(ARRAY, strlen(yytext), new SymbolType(CHAR, SIZE_OF_CHAR))); yylval.symbolptr -> value = yytext; return STRING_LITERAL;}
 	YY_BREAK
 case 92:
 YY_RULE_SETUP

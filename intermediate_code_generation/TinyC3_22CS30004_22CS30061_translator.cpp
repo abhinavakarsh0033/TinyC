@@ -36,7 +36,6 @@ Symbol::Symbol() {
     this -> size = 0;
     this -> offset = 0;
     this -> nestedTable = NULL;
-    this -> parent = NULL;
 }
 
 Symbol::Symbol(string name, SymbolType *type, string value, int size, int offset, SymbolTable *nestedTable) {
@@ -67,6 +66,8 @@ void Symbol::print() {
 SymbolTable::SymbolTable() {
     this -> table = vector<Symbol *>();
     this -> parent = NULL;
+    this -> name = "";
+    this -> blockCount = 0;
 }
 
 Symbol *SymbolTable::gentemp() {
@@ -106,8 +107,22 @@ void SymbolTable::update(string idName, string value) {
 }
 
 void SymbolTable::print() {
-    for(Symbol *entry: table)
+    cout << "\n\t\t" << name << " SYMBOL TABLE\t\tParent : " << (parent ? parent -> name : "NULL") << endl;
+    vector<Symbol *> v;
+    for(Symbol *entry: table) {
         entry -> print();
+        if(entry -> nestedTable) v.push_back(entry);
+    }
+    for(Symbol *entry: v) entry -> nestedTable -> print();
+}
+
+void SymbolTable::setOffset() {
+    for(Symbol *entry: table) {
+        entry -> size = sizeOfType(entry -> type);
+        entry -> offset = currOffset;
+        currOffset += entry -> size;
+        if(entry -> nestedTable) entry -> nestedTable -> setOffset();
+    }
 }
 
 Quad::Quad() {
@@ -136,7 +151,8 @@ void Quad::print() {
     else if(op == "param") cout << "param\t" << arg1 << endl;
     else if(op == "call") cout << res << "\t=\t" << "call\t" << arg1 << "\t" << arg2 << endl;
     else if(op.substr(0,1) == "u") cout << res << "\t=\t" << op.substr(1) << arg1 << endl;
-    else if(op == "return") cout << "return\t" << res << endl; 
+    else if(op == "return") cout << "return\t" << arg1 << endl << endl; 
+    else if(op == "label") cout << arg1 << ":" << endl;
     else cout << res << "\t=\t" << arg1 << "\t" << op << "\t" << arg2 << endl;
 }
 
@@ -146,7 +162,7 @@ QuadArray::QuadArray() {
 
 void QuadArray::print() {
     for(int i=0;i<arr.size();i++) {
-        cout << i+1 << ":\t";
+        cout << i+1 << ":\t" << (arr[i] -> op == "label" ? "" : "\t");
         arr[i] -> print();
     }
 }
@@ -231,6 +247,16 @@ vector<int> makelist(int i) {
     return list;
 }
 
+void addNestedTable(SymbolTable *ST) {
+    string name = ST -> name + "_Block" + to_string(ST -> blockCount++);
+    Symbol *block = ST -> lookup(name);
+    block -> nestedTable = new SymbolTable();
+    block -> nestedTable -> parent = ST;
+    currST = block -> nestedTable;
+    currST -> name = name;
+    return;
+}
+
 void switchTable(SymbolTable *newTable) {
     currST = newTable;
     return;
@@ -250,7 +276,7 @@ int sizeOfType(SymbolType *type) {
         case FLOAT: return SIZE_OF_FLOAT;
         case POINTER: return SIZE_OF_POINTER;
         case FUNCTION: return SIZE_OF_FUNCTION;
-        case ARRAY: return sizeOfType(type -> elementType) * type -> elementType -> num_elements;
+        case ARRAY: return sizeOfType(type -> elementType) * type ->  num_elements;
     }
     return 0;
 }
@@ -266,16 +292,18 @@ bool typeCheck(SymbolType *t1, SymbolType *t2) {
 
 int main() {
     globalST = new SymbolTable();
+    globalST -> name = "Global";
     currST = globalST;
     quadTable = new QuadArray();
+    currOffset = 0;
 
     yyparse();
 
     cout << "************************************************Quadruple Table***********************************************************" << endl;
     quadTable -> print();
 
-    cout << "\n*************************************************Symbol Table**************************************************************" << endl;
+    globalST -> setOffset();
     globalST -> print();
-
+    
     return 0;
 }

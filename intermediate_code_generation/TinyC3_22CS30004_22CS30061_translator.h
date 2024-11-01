@@ -1,6 +1,7 @@
 #include<iostream>
 #include<string>
 #include<vector>
+#include<queue>
 using namespace std;
 
 #define SIZE_OF_VOID 0
@@ -30,6 +31,7 @@ int currType;   // type of current variable
 Symbol *currSymbol;
 Expression *currExpr, *currExprFor;
 QuadArray *quadTable;
+int currOffset;
 
 class SymbolType {
 public:
@@ -50,7 +52,6 @@ public:
     int size;
     int offset;
     SymbolTable *nestedTable;
-    SymbolTable *parent;
     
     Symbol();
     Symbol(string name, SymbolType *type, string value, int size, int offset, SymbolTable *nestedTable = NULL);
@@ -65,12 +66,15 @@ public:
     static int temp_cnt;
     vector<Symbol *> table;
     SymbolTable *parent;
+    string name;
+    int blockCount;
 
     SymbolTable();
     static Symbol *gentemp();                               // remember to add params as per need (type, value)
     static Symbol *gentemp(SymbolType *type);                   // remember to add params as per need (type, value)
     Symbol *lookup(string idName);
     void update(string idName, string value);
+    void setOffset();
     void print();
 };
 
@@ -137,6 +141,8 @@ int nextinstr();
 vector<int> makelist();
 
 vector<int> makelist(int i);
+
+void addNestedTable(SymbolTable *ST);
 
 void switchTable(SymbolTable *newTable);
 

@@ -1133,13 +1133,9 @@ translation_unit : external_declaration                 {/* skip */ cerr << "tra
 external_declaration : function_definition              {/* skip */ cerr << "external_declaration -> function_definition" << endl;}
         | declaration                                   {/* skip */ cerr << "external_declaration -> declaration" << endl;}
         ;
-function_definition : declaration_specifiers declarator declaration_list_opt CTF compound_statement
+function_definition : declaration_specifiers declarator declaration_list_opt CTF LEFT_CURLY_BRACKET block_item_list_opt RIGHT_CURLY_BRACKET
         {
             cerr << "function_definition -> declaration_specifiers declarator declaration_list_opt compound_statement" << endl;
-            SymbolTable *child = currST -> table.back() -> nestedTable;
-            SymbolTable *funcTable = currST -> lookup($2 -> name) -> nestedTable;
-            currST -> table.pop_back();
-            for(Symbol *s: child -> table) funcTable -> table.push_back(s);
             if(quadTable -> arr.back() -> op != "return") emit("return", "", "", "");
             switchTable(globalST);
         }

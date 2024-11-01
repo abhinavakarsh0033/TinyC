@@ -115,29 +115,29 @@ $7	int	1	4	60	No
 $8	int		4	64	No
 $9	bool		1	68	No
 $10	int		4	69	No
-$function_sort_Block0_Block0	int		4	73	Yes
+$function_sort_Block0	int		4	73	Yes
 
-		$function_sort_Block0_Block0 SYMBOL TABLE		Parent : $function_sort_Block0
+		$function_sort_Block0 SYMBOL TABLE		Parent : $function_sort
 $11	int	1	4	77	No
 $12	int		4	81	No
 $13	bool		1	85	No
 $14	int		4	86	No
-$function_sort_Block0_Block0_Block0	int		4	90	Yes
+$function_sort_Block0_Block0	int		4	90	Yes
 $20	int		4	115	No
 $21	int**		4	119	No
 $22	int		4	123	No
 $23	int**		4	127	No
 $24	function		0	131	No
 
-		$function_sort_Block0_Block0_Block0 SYMBOL TABLE		Parent : $function_sort_Block0_Block0
+		$function_sort_Block0_Block0 SYMBOL TABLE		Parent : $function_sort_Block0
 $15	int		4	94	No
 $16	int*		4	98	No
 $17	int		4	102	No
 $18	int*		4	106	No
 $19	bool		1	110	No
-$function_sort_Block0_Block0_Block0_Block0	int		4	111	Yes
+$function_sort_Block0_Block0_Block0	int		4	111	Yes
 
-		$function_sort_Block0_Block0_Block0_Block0 SYMBOL TABLE		Parent : $function_sort_Block0_Block0_Block0
+		$function_sort_Block0_Block0_Block0 SYMBOL TABLE		Parent : $function_sort_Block0_Block0
 
 		$function_main SYMBOL TABLE		Parent : Global
 arr	array(6, int)		24	131	No

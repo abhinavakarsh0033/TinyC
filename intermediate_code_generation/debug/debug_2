@@ -1,2 +1,95 @@
-syntax error
-Error at line number: 1 at token: 
+type_specifier -> INT
+declaration_specifiers_opt -> epsilon
+declaration_specifiers -> type_specifier declaration_specifiers_opt
+pointer_opt -> epsilon
+direct_declarator -> IDENTIFIER
+identifier_list_opt -> epsilon
+direct_declarator -> direct_declarator LEFT_ROUND_BRACKET CT identifier_list_opt RIGHT_ROUND_BRACKET
+declarator -> pointer_opt direct_declarator
+declaration_list_opt -> epsilon
+type_specifier -> INT
+declaration_specifiers_opt -> epsilon
+declaration_specifiers -> type_specifier declaration_specifiers_opt
+pointer_opt -> epsilon
+direct_declarator -> IDENTIFIER
+type_qualifier_list_opt -> epsilon
+primary_expression -> INTEGER_CONSTANT
+postfix_expression -> primary_expression
+unary_expression -> postfix_expression
+cast_expression -> unary_expression
+multiplicative_expression -> cast_expression
+additive_expression -> multiplicative_expression
+shift_expression -> additive_expression
+relational_expression -> shift_expression
+equality_expression -> relational_expression
+AND_expression -> equality_expression
+exclusive_OR_expression -> AND_expression
+inclusive_OR_expression -> exclusive_OR_expression
+logical_AND_expression -> inclusive_OR_expression
+logical_OR_expression -> logical_AND_expression
+conditional_expression -> logical_OR_expression
+assignment_expression -> conditional_expression
+assignment_expression_opt -> assignment_expression
+direct_declarator -> direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list_opt assignment_expression_opt RIGHT_SQUARE_BRACKET
+declarator -> pointer_opt direct_declarator
+init_declarator -> declarator
+init_declarator_list -> init_declarator
+init_declarator_list_opt -> init_declarator_list
+declaration -> declaration_specifiers init_declarator_list_opt SEMICOLON
+block_item -> declaration
+block_item_list -> block_item
+type_specifier -> INT
+declaration_specifiers_opt -> epsilon
+declaration_specifiers -> type_specifier declaration_specifiers_opt
+pointer_opt -> epsilon
+direct_declarator -> IDENTIFIER
+declarator -> pointer_opt direct_declarator
+unary_operator -> MINUS
+primary_expression -> IDENTIFIER
+postfix_expression -> primary_expression
+primary_expression -> INTEGER_CONSTANT
+postfix_expression -> primary_expression
+unary_expression -> postfix_expression
+cast_expression -> unary_expression
+multiplicative_expression -> cast_expression
+additive_expression -> multiplicative_expression
+shift_expression -> additive_expression
+relational_expression -> shift_expression
+equality_expression -> relational_expression
+AND_expression -> equality_expression
+exclusive_OR_expression -> AND_expression
+inclusive_OR_expression -> exclusive_OR_expression
+logical_AND_expression -> inclusive_OR_expression
+logical_OR_expression -> logical_AND_expression
+conditional_expression -> logical_OR_expression
+assignment_expression -> conditional_expression
+expression -> assignment_expression
+postfix_expression -> postfix_expression LEFT_SQUARE_BRACKET expression RIGHT_SQUARE_BRACKET
+unary_expression -> postfix_expression
+cast_expression -> unary_expression
+unary_expression -> unary_operator cast_expression
+cast_expression -> unary_expression
+multiplicative_expression -> cast_expression
+additive_expression -> multiplicative_expression
+shift_expression -> additive_expression
+relational_expression -> shift_expression
+equality_expression -> relational_expression
+AND_expression -> equality_expression
+exclusive_OR_expression -> AND_expression
+inclusive_OR_expression -> exclusive_OR_expression
+logical_AND_expression -> inclusive_OR_expression
+logical_OR_expression -> logical_AND_expression
+conditional_expression -> logical_OR_expression
+assignment_expression -> conditional_expression
+initializer -> assignment_expression
+init_declarator -> declarator ASSIGNMENT initializer
+init_declarator_list -> init_declarator
+init_declarator_list_opt -> init_declarator_list
+declaration -> declaration_specifiers init_declarator_list_opt SEMICOLON
+block_item -> declaration
+block_item_list -> block_item_list M block_item
+block_item_list_opt -> block_item_list
+function_definition -> declaration_specifiers declarator declaration_list_opt compound_statement
+external_declaration -> function_definition
+translation_unit -> external_declaration
+PROGRAM -> translation_unit

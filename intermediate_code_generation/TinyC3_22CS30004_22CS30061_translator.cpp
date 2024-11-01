@@ -150,6 +150,7 @@ void Quad::print() {
     else if(op == "=") cout << res << "\t=\t" << arg1 << endl;
     else if(op == "param") cout << "param\t" << arg1 << endl;
     else if(op == "call") cout << res << "\t=\t" << "call\t" << arg1 << "\t" << arg2 << endl;
+    else if(op.substr(0, 3) == "u[]") cout << res << "\t=\t" << op.substr(3) << arg1 << "[" << arg2 << "]" << endl;
     else if(op.substr(0,1) == "u") cout << res << "\t=\t" << op.substr(1) << arg1 << endl;
     else if(op == "return") cout << "return\t" << arg1 << endl << endl; 
     else if(op == "label") cout << arg1 << ":" << endl;

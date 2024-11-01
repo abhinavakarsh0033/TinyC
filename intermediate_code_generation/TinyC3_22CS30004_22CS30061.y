@@ -157,11 +157,13 @@ postfix_expression : primary_expression
 			{
 				Symbol *temp = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));
 				//sizeOfType recusively calculates the size of the arr
+                $$ -> entry -> type = $1 -> arr -> elementType;
 				emit("*", $3 -> entry -> name, to_string(sizeOfType($$ -> arr -> elementType)), temp -> name);	
 				emit("+", $1 -> arr -> addr -> name, temp -> name, $$ -> arr -> addr -> name);
 			}
 			else	//TODO: verify this
 			{
+                $$-> entry -> type = $1 -> entry -> type -> elementType;
                 emit("*", $3 -> entry -> name, to_string(sizeOfType($$ -> arr -> elementType)), $$ -> arr -> addr -> name);
 				// emit("*", $$ -> addr -> name);
 			}
@@ -257,15 +259,16 @@ unary_expression : postfix_expression
 			if($1 == AMPERSAND)
 			{
 				$$ -> entry = SymbolTable::gentemp(new SymbolType(POINTER, SIZE_OF_POINTER));
-				$$ -> entry -> type -> elementType = $2 -> entry -> type;
-				emit("u&", $2 -> entry -> name, "", $$ -> entry -> name);
+				if($2 -> arr -> type == ARRAY) emit("u[]&", $2 -> entry -> name, $2 -> arr -> addr -> name, $$ -> entry -> name);
+                else emit("u&", $2 -> entry -> name, "", $$ -> entry -> name);
 			}
 			else if($1 == ASTERISK)
 			{
 				$$ -> arr -> type = POINTER;
 				$$ -> arr -> addr = SymbolTable::gentemp($2 -> entry -> type);
 				$$ -> entry = $2 -> entry;
-				emit("u*",$2 -> entry -> name, "", $$ -> arr -> addr -> name);
+                if($2 -> arr -> type == ARRAY) emit("u[]*", $2 -> entry -> name, $2 -> arr -> addr -> name, $$ -> entry -> name);
+                else emit("u*", $2 -> entry -> name, "", $$ -> entry -> name);
 			}
 			else if($1 == PLUS)
 			{
@@ -274,12 +277,14 @@ unary_expression : postfix_expression
 			else if($1 == MINUS)
 			{
 				$$ -> entry = SymbolTable::gentemp($2 -> entry -> type);
-				emit("u-", $2 -> entry -> name, "", $$ -> entry -> name);
+				if($2 -> arr -> type == ARRAY) emit("u[]-", $2 -> entry -> name, $2 -> arr -> addr -> name, $$ -> entry -> name);
+                else emit("u-", $2 -> entry -> name, "", $$ -> entry -> name);
 			}
 			else if($1 == TILDE)
 			{
 				$$ -> entry = SymbolTable::gentemp($2 -> entry -> type);
-				emit("u~", $2 -> entry -> name, "", $$ -> entry -> name);
+				if($2 -> arr -> type == ARRAY) emit("u[]~", $2 -> entry -> name, $2 -> arr -> addr -> name, $$ -> entry -> name);
+                else emit("u~", $2 -> entry -> name, "", $$ -> entry -> name);
 			}
 			else if($1 == EXCLAMATION)
 			{
@@ -289,7 +294,11 @@ unary_expression : postfix_expression
                 $$ -> falselist = $2 -> falselist;
                 $$ -> nextlist = $2 -> nextlist;
                 $$ -> type = $2 -> type;
-				if($2 -> type != BOOL) emit("u!", $2 -> entry -> name, "", $$ -> entry -> name);
+				if($2 -> type != BOOL)
+                {
+                    if($2 -> arr -> type == ARRAY) emit("u[]!", $2 -> entry -> name, $2 -> arr -> addr -> name, $$ -> entry -> name);
+                    else emit("u!", $2 -> entry -> name, "", $$ -> entry -> name);
+                }
 			}
             currExpr = $$;
 		}		

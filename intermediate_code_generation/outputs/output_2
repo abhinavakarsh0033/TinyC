@@ -1,0 +1,20 @@
+************************************************Quadruple Table***********************************************************
+1:	main:
+2:		$0	=	10
+3:		$1	=	0
+4:		$2	=	$1	*	4
+5:		$3	=	-arr[$2]
+6:		b	=	$3
+7:		return	
+
+
+		Global SYMBOL TABLE		Parent : NULL
+main	function		0	0	Yes
+
+		$function_main SYMBOL TABLE		Parent : Global
+arr	int		4	0	No
+$0	int	10	4	4	No
+b	int		4	8	No
+$1	int	0	4	12	No
+$2	int		4	16	No
+$3	int		4	20	No

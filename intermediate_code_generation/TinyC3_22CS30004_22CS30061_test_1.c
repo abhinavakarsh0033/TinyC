@@ -1,4 +1,9 @@
-// Testing function definitions, declarations and calls
+/**
+ * TinyC Intermediate Code Generation
+ * Test1 : Testing function definitions, declarations and calls
+ * Pranav Jha (22CS30061)
+ * Abhinav Akarsh (22CS30004)
+ */
 
 void foo();
 int fx(int a, int b);
@@ -12,7 +17,7 @@ int main() {
 }
 
 int fx(int x, int y) {
-    return x + y;
+    return (float)x + y;
 }
 
 void foo() {

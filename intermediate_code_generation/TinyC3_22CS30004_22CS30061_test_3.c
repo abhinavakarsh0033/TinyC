@@ -1,3 +1,10 @@
+/**
+ * TinyC Intermediate Code Generation
+ * Test3 : Testing various operators and expressions, if-else, while
+ * Pranav Jha (22CS30061)
+ * Abhinav Akarsh (22CS30004)
+ */
+
 int M = 1e9 + 7;
 int binpow_iterative(int a, int b) {
     int res = 1;
@@ -5,7 +12,7 @@ int binpow_iterative(int a, int b) {
         if (b & 1)
             res = (res * a) % M;
         a = a * a % M;
-        b >>= 1;
+        b  = b >> 1;
     }
     return res;
 }

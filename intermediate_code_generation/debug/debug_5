@@ -1,4 +1,4 @@
-type_specifier -> VOID
+type_specifier -> FLOAT
 declaration_specifiers_opt -> epsilon
 declaration_specifiers -> type_specifier declaration_specifiers_opt
 pointer_opt -> epsilon

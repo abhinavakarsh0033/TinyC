@@ -249,10 +249,15 @@ parameter_type_list -> parameter_list
 direct_declarator -> direct_declarator LEFT_ROUND_BRACKET CT parameter_type_list RIGHT_ROUND_BRACKET
 declarator -> pointer_opt direct_declarator
 declaration_list_opt -> epsilon
+type_specifier -> FLOAT
+specifier_qualifier_list_opt -> epsilon
+specifier_qualifier_list -> type_specifier specifier_qualifier_list_opt
+type_name -> specifier_qualifier_list
 primary_expression -> IDENTIFIER
 postfix_expression -> primary_expression
 unary_expression -> postfix_expression
 cast_expression -> unary_expression
+cast_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET cast_expression
 multiplicative_expression -> cast_expression
 additive_expression -> multiplicative_expression
 primary_expression -> IDENTIFIER

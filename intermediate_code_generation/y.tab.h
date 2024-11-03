@@ -251,13 +251,13 @@ union YYSTYPE
 {
 #line 18 "TinyC3_22CS30004_22CS30061.y"
 
-    Expression *expr;
-    ArrayExpression *arrexpr;
-    Statement *stmt;
-    Symbol *symbolptr;
-    int inst;
-	int cnt;
-	int op;
+    Expression *expr;           //used to store the expression
+    ArrayExpression *arrexpr;   //used to store the array expression
+    Statement *stmt;            //used to store the statement
+    Symbol *symbolptr;          //used to store the symbol pointer
+    int inst;                   //used to store the instruction numbers, helps in backpatching
+	int cnt;                    //used to store the count of arguments
+	int op;                     //used to store
 
 #line 263 "y.tab.h"
 

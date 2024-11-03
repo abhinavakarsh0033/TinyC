@@ -1,13 +1,5 @@
-start	int		4	0	No
-end	int		4	0	No
+		3-Address Code
 
-mid	int		4	0	No
-$5	int	1	4	0	No
-
-mid	int		4	0	No
-$10	int	1	4	0	No
-
-************************************************Quadruple Table***********************************************************
 1:	merge_sort:
 2:		if	start < end	goto	4
 3:		goto	23
@@ -111,10 +103,12 @@ $10	int	1	4	0	No
 
 
 		Global SYMBOL TABLE		Parent : NULL
-merge_sort	function		0	0	Yes
-merge	function		0	49	Yes
+Name	Type	Initial-Value	Size	Offset	Nested-Table
+merge_sort	void		0	0	Yes
+merge	void		0	49	Yes
 
 		$function_merge_sort SYMBOL TABLE		Parent : Global
+Name	Type	Initial-Value	Size	Offset	Nested-Table
 A	int*		4	0	No
 start	int		4	4	No
 end	int		4	8	No
@@ -122,18 +116,20 @@ $0	bool		1	12	No
 $function_merge_sort_Block0	int		4	13	Yes
 
 		$function_merge_sort_Block0 SYMBOL TABLE		Parent : $function_merge_sort
+Name	Type	Initial-Value	Size	Offset	Nested-Table
 mid	int		4	17	No
 $1	int		4	21	No
 $2	int	2	4	25	No
 $3	int		4	29	No
-$4	function		0	33	No
+$4	void		0	33	No
 $5	int	1	4	33	No
 $6	int		4	37	No
-$7	function		0	41	No
+$7	void		0	41	No
 merge	int		4	41	No
 $8	int		4	45	No
 
 		$function_merge SYMBOL TABLE		Parent : Global
+Name	Type	Initial-Value	Size	Offset	Nested-Table
 A	array(100, int)		400	49	No
 $9	int	100	4	449	No
 start	int		4	453	No
@@ -157,6 +153,7 @@ $45	int		4	1010	No
 $function_merge_Block1	int		4	1014	Yes
 
 		$function_merge_Block0 SYMBOL TABLE		Parent : $function_merge
+Name	Type	Initial-Value	Size	Offset	Nested-Table
 $16	bool		1	906	No
 $17	int		4	907	No
 $18	int		4	911	No
@@ -186,6 +183,7 @@ $41	int		4	997	No
 $42	int		4	1001	No
 
 		$function_merge_Block1 SYMBOL TABLE		Parent : $function_merge
+Name	Type	Initial-Value	Size	Offset	Nested-Table
 $46	int		4	1018	No
 $47	int		4	1022	No
 $48	int		4	1026	No

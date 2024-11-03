@@ -1,4 +1,3 @@
-// #include "TinyC3_22CS30004_22CS30061_translator.h" // already included
 #include "lex.yy.c"
 
 int SymbolTable::temp_cnt = 0;
@@ -9,6 +8,15 @@ SymbolType::SymbolType() {
     this -> elementType = NULL;
 }
 
+SymbolType::SymbolType(SymbolType *type) {
+    //copy constructor
+    this -> type = type -> type;
+    this -> num_elements = type -> num_elements;
+    //copy recursively
+    if(type -> elementType) this -> elementType = new SymbolType(type -> elementType);
+    else this -> elementType = NULL;
+}
+
 SymbolType::SymbolType(int type, int num_elements, SymbolType *elementType) {
     this -> type = type;
     this -> num_elements = num_elements;
@@ -16,6 +24,7 @@ SymbolType::SymbolType(int type, int num_elements, SymbolType *elementType) {
 }
 
 void SymbolType::print() {
+    //various case in which type can be, and their respective print statements
     switch(type) {
         case VOID: cout << "void"; break;
         case BOOL: cout << "bool"; break;
@@ -29,7 +38,8 @@ void SymbolType::print() {
     }
 }
 
-Symbol::Symbol() {
+// Simple Symbol Table Entry
+Symbol::Symbol() {  
     this -> name = "";
     this -> type = NULL;
     this -> value = "";
@@ -38,6 +48,7 @@ Symbol::Symbol() {
     this -> nestedTable = NULL;
 }
 
+// Constructor for simple Symbol Table Entry
 Symbol::Symbol(string name, SymbolType *type, string value, int size, int offset, SymbolTable *nestedTable) {
     this -> name = name;
     this -> type = type;
@@ -106,8 +117,10 @@ void SymbolTable::update(string idName, string value) {
     if(symbol) symbol -> update(value);
 }
 
+//print the symbol table, and recursively print the nested symbol tables
 void SymbolTable::print() {
     cout << "\n\t\t" << name << " SYMBOL TABLE\t\tParent : " << (parent ? parent -> name : "NULL") << endl;
+    cout << "Name\tType\tInitial-Value\tSize\tOffset\tNested-Table" << endl;
     vector<Symbol *> v;
     for(Symbol *entry: table) {
         entry -> print();
@@ -116,6 +129,7 @@ void SymbolTable::print() {
     for(Symbol *entry: v) entry -> nestedTable -> print();
 }
 
+//set the offset of the variables in the symbol table
 void SymbolTable::setOffset() {
     for(Symbol *entry: table) {
         entry -> size = sizeOfType(entry -> type);
@@ -125,6 +139,7 @@ void SymbolTable::setOffset() {
     }
 }
 
+// Constructor for Quadruple
 Quad::Quad() {
     this -> op = "";
     this -> arg1 = "";
@@ -132,6 +147,7 @@ Quad::Quad() {
     this -> res = "";
 }
 
+// Constructor for Quadruple
 Quad::Quad(string op, string arg1, string arg2, string res) {
     this -> op = op;
     this -> arg1 = arg1;
@@ -139,6 +155,7 @@ Quad::Quad(string op, string arg1, string arg2, string res) {
     this -> res = res;
 }
 
+// Print the Quadruple, with proper formatting
 void Quad::print() {
     // cout << op << "\t" << arg1 << "\t" << arg2 << "\t" << res << endl; 
     if(op == "goto") cout << op << "\t" << ((res!="__") ? to_string(stoi(res)+1) : res) << endl;
@@ -154,13 +171,19 @@ void Quad::print() {
     else if(op.substr(0,1) == "u") cout << res << "\t=\t" << op.substr(1) << arg1 << endl;
     else if(op == "return") cout << "return\t" << arg1 << endl << endl; 
     else if(op == "label") cout << arg1 << ":" << endl;
+    else if(op.substr(0,3) == "int") cout << op << "\t" << arg1 << endl;
+    else if(op.substr(0,4) == "char") cout << op << "\t" << arg1 << endl;
+    else if(op.substr(0,5) == "float") cout << op << "\t" << arg1 << endl;
+    else if(op.substr(0,4) == "void") cout << op << "\t" << arg1 << endl;
     else cout << res << "\t=\t" << arg1 << "\t" << op << "\t" << arg2 << endl;
 }
 
+// Constructor for Quadruple Array
 QuadArray::QuadArray() {
     this -> arr = vector<Quad *>();
 }
 
+// Print the Quadruple Array
 void QuadArray::print() {
     for(int i=0;i<arr.size();i++) {
         cout << i+1 << ":\t" << (arr[i] -> op == "label" ? "" : "\t");
@@ -168,6 +191,7 @@ void QuadArray::print() {
     }
 }
 
+// Constructor for Expression
 Expression::Expression() {
     this -> type = INT;
     this -> entry = NULL;
@@ -177,6 +201,7 @@ Expression::Expression() {
     this -> nextlist = vector<int>();
 }
 
+// Constructor for Expression
 Expression::Expression(int type) {
     this -> type = type;
     this -> entry = NULL;
@@ -206,6 +231,7 @@ void emit(string op, string arg1, string arg2, string res) {
     quadTable -> arr.push_back(new Quad(op, arg1, arg2, res));
 }
 
+//convert the expression to boolean, if it is not already and emit the required quadruples
 void convertToBool(Expression *expr) {
     if(expr == NULL) yyerror("Expression is NULL");
     if(expr -> type != BOOL) {
@@ -217,12 +243,13 @@ void convertToBool(Expression *expr) {
     }
 }
 
+//convert the expression to integer, if it is not already and emit the required quadruples
 void convertToInt(Expression *expr) {
     if(expr -> entry -> type -> type == INT) return;
     else if(expr -> entry -> type -> type == FLOAT)
-        emit("float2int", expr -> entry -> name, "", expr -> entry -> name);
+        emit("float2int", expr -> entry -> name, "", "");
     else if(expr -> entry -> type -> type == CHAR)
-        emit("char2int", expr -> entry -> name, "", expr -> entry -> name);
+        emit("char2int", expr -> entry -> name, "", "");
     else yyerror("Cannot convert to int");
     return;
 }
@@ -258,6 +285,7 @@ void addNestedTable(SymbolTable *ST) {
     return;
 }
 
+// void addNestedTable(SymbolTable *ST) {
 void switchTable(SymbolTable *newTable) {
     currST = newTable;
     return;
@@ -277,23 +305,14 @@ int sizeOfType(SymbolType *type) {
         case FLOAT: return SIZE_OF_FLOAT;
         case POINTER: return SIZE_OF_POINTER;
         case FUNCTION: return SIZE_OF_FUNCTION;
+        // Calculate size of array by multiplying size of element type with number of elements
         case ARRAY: return sizeOfType(type -> elementType) * type ->  num_elements;
     }
     return 0;
 }
 
-// bool typeCheck(SymbolType *t1, SymbolType *t2) {
-//     while(t1 -> type == ARRAY) t1 = t1 -> elementType;
-//     while(t2 -> type == ARRAY) t2 = t2 -> elementType;
-//     int type1 = t1 -> type;
-//     int type2 = t2 -> type;
-//     if(type1 == INT && (type2 == FLOAT || type2 == CHAR)) return 1;
-//     if(type1 == FLOAT && (type2 == INT || type2 == CHAR)) return 1;
-//     if(type1 == CHAR && (type2 == INT || type2 == FLOAT)) return 1;
-//     // int + float may be allowed
-//     return type1 == type2; // TODO: Review
-// }
 
+// Type checking functions
 SymbolType *typeCheck(Expression *E1, Expression *E2) {
     SymbolType *t1 = E1 -> entry -> type;
     if(E1 -> arr != NULL) t1 = E1 -> arr -> elementType;
@@ -338,41 +357,41 @@ void convertType(Expression *expr, SymbolType *from, SymbolType *to) {
     if(from -> type == to -> type) return;
     if(from -> type == INT && to -> type == FLOAT) {
         emit("int2float", expr -> entry -> name, "", "");
-        expr -> entry -> type  = to;
+        // expr -> entry -> type  = to;
         return;
     }
     else if(from -> type == FLOAT && to -> type == INT) {
         emit("float2int", expr -> entry -> name, "", "");
-        expr -> entry -> type = to;
+        // expr -> entry -> type = to;
         return;
     }
     else if(from -> type == CHAR && to -> type == INT) {
         emit("char2int", expr -> entry -> name, "", "");
-        expr -> entry -> type = to;
+        // expr -> entry -> type = to;
         return;
     }
     else if(from -> type == INT && to -> type == CHAR) {
         emit("int2char", expr -> entry -> name, "", "");
-        expr -> entry -> type = to;
+        // expr -> entry -> type = to;
         return;
     }
     else if(from -> type == CHAR && to -> type == FLOAT) {
         emit("char2int", expr -> entry -> name, "", "");
         emit("int2float", expr -> entry -> name, "", "");
-        expr -> entry -> type = to;
+        // expr -> entry -> type = to;
         return;
     }
     else if(from -> type == FLOAT && to -> type == CHAR) {
         emit("float2int", expr -> entry -> name, "", "");
         emit("int2char", expr -> entry -> name, "", "");
-        expr -> entry -> type = to;
+        // expr -> entry -> type = to;
         return;
     }
-    cerr << from -> type << " " << to -> type << endl;
     yyerror("Type mismatch");
     return;
 }
 
+// Function to generate quadruples for arithmetic operations
 int main() {
     globalST = new SymbolTable();
     globalST -> name = "Global";
@@ -382,7 +401,7 @@ int main() {
 
     yyparse();
 
-    cout << "************************************************Quadruple Table***********************************************************" << endl;
+    cout << "\t\t3-Address Code\n" << endl;
     quadTable -> print();
 
     globalST -> setOffset();

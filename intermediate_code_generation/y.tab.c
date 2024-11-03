@@ -73,9 +73,9 @@
 #include <string>
 using namespace std;
 #include "TinyC3_22CS30004_22CS30061_translator.h"
-extern int yylineno;
-int yylex();
-void yyerror(string s);
+extern int yylineno;        //used to store the line number
+int yylex();                //used to call the lexer
+void yyerror(string s);     //used to call the error function, s is the error message
 
 #line 81 "y.tab.c"
 
@@ -318,13 +318,13 @@ union YYSTYPE
 {
 #line 18 "TinyC3_22CS30004_22CS30061.y"
 
-    Expression *expr;
-    ArrayExpression *arrexpr;
-    Statement *stmt;
-    Symbol *symbolptr;
-    int inst;
-	int cnt;
-	int op;
+    Expression *expr;           //used to store the expression
+    ArrayExpression *arrexpr;   //used to store the array expression
+    Statement *stmt;            //used to store the statement
+    Symbol *symbolptr;          //used to store the symbol pointer
+    int inst;                   //used to store the instruction numbers, helps in backpatching
+	int cnt;                    //used to store the count of arguments
+	int op;                     //used to store
 
 #line 330 "y.tab.c"
 
@@ -912,27 +912,27 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    66,    66,    73,    82,    92,   102,   112,   121,   128,
-     144,   170,   181,   182,   183,   193,   203,   204,   206,   212,
-     220,   224,   230,   236,   243,   250,   309,   310,   312,   317,
-     322,   327,   332,   337,   343,   350,   352,   371,   379,   387,
-     396,   402,   414,   424,   430,   440,   451,   457,   470,   482,
-     494,   507,   513,   525,   538,   544,   555,   561,   572,   578,
-     589,   595,   609,   615,   629,   635,   637,   643,   655,   660,
-     667,   672,   673,   674,   675,   676,   677,   678,   679,   680,
-     681,   683,   689,   692,   697,   704,   708,   714,   715,   720,
-     721,   723,   724,   726,   727,   729,   734,   740,   745,   753,
-     754,   755,   756,   758,   763,   768,   769,   774,   775,   780,
-     781,   782,   783,   788,   789,   791,   796,   799,   803,   805,
-     806,   807,   809,   811,   824,   830,   835,   855,   856,   857,
-     858,   874,   888,   896,   906,   910,   916,   917,   920,   924,
-     926,   932,   934,   939,   945,   950,   956,   957,   960,   965,
-     967,   969,   974,   975,   977,   978,   980,   982,   983,   985,
-     986,   988,   989,   993,   994,   999,  1004,  1009,  1014,  1020,
-    1021,  1022,  1024,  1032,  1036,  1042,  1047,  1054,  1059,  1065,
-    1072,  1080,  1089,  1091,  1101,  1110,  1122,  1124,  1125,  1126,
-    1127,  1139,  1140,  1142,  1143,  1145,  1152,  1153,  1155,  1156,
-    1161,  1166,  1173,  1183,  1188,  1193,  1198
+       0,   123,   123,   130,   138,   148,   158,   168,   176,   183,
+     197,   220,   229,   230,   231,   241,   251,   252,   254,   260,
+     268,   272,   278,   284,   291,   298,   357,   358,   360,   365,
+     370,   375,   380,   385,   391,   398,   400,   419,   427,   435,
+     444,   450,   459,   469,   475,   485,   496,   502,   514,   526,
+     538,   551,   557,   569,   582,   588,   599,   605,   616,   622,
+     633,   639,   653,   659,   673,   679,   681,   687,   699,   704,
+     711,   716,   717,   718,   719,   720,   721,   722,   723,   724,
+     725,   727,   733,   736,   741,   748,   752,   758,   759,   764,
+     765,   767,   768,   770,   771,   773,   778,   784,   789,   796,
+     797,   798,   799,   801,   806,   811,   812,   817,   818,   823,
+     824,   825,   826,   831,   832,   834,   839,   842,   846,   848,
+     849,   850,   852,   854,   867,   873,   878,   897,   898,   899,
+     900,   911,   925,   932,   941,   945,   951,   952,   955,   959,
+     961,   967,   969,   974,   980,   985,   991,   992,   995,  1000,
+    1002,  1004,  1009,  1010,  1012,  1013,  1015,  1017,  1018,  1020,
+    1021,  1023,  1024,  1028,  1029,  1034,  1039,  1044,  1049,  1055,
+    1056,  1057,  1059,  1067,  1071,  1077,  1082,  1089,  1094,  1100,
+    1107,  1116,  1126,  1128,  1139,  1149,  1162,  1164,  1165,  1166,
+    1167,  1179,  1180,  1182,  1183,  1185,  1192,  1193,  1195,  1196,
+    1201,  1206,  1213,  1223,  1228,  1233,  1238
 };
 #endif
 
@@ -1883,7 +1883,7 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* PROGRAM: translation_unit  */
-#line 67 "TinyC3_22CS30004_22CS30061.y"
+#line 124 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "PROGRAM -> translation_unit" << endl;
         }
@@ -1891,176 +1891,167 @@ yyreduce:
     break;
 
   case 3: /* primary_expression: IDENTIFIER  */
-#line 74 "TinyC3_22CS30004_22CS30061.y"
+#line 131 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "primary_expression -> IDENTIFIER" << endl;
             (yyval.expr) = new Expression();
-            (yyval.expr) -> entry = (yyvsp[0].symbolptr);
-            (yyval.expr) -> type = INT;                                            //TODO: fill this
-            // $$ -> entry -> type = new SymbolType(IDENTIFIER);            //TODO: check if this is correct
-            currExpr = (yyval.expr);
+            (yyval.expr) -> entry = (yyvsp[0].symbolptr);           //Setting the entry of the expression to the symbol table entry
+            (yyval.expr) -> type = INT;           //By default the type of epresion is INT
+            currExpr = (yyval.expr);              //Helps in the conditional expressions, and loops
         }
-#line 1904 "y.tab.c"
+#line 1903 "y.tab.c"
     break;
 
   case 4: /* primary_expression: INTEGER_CONSTANT  */
-#line 83 "TinyC3_22CS30004_22CS30061.y"
+#line 139 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "primary_expression -> INTEGER_CONSTANT" << endl;
-			(yyval.expr) = new Expression();
-			(yyval.expr) -> entry = (yyvsp[0].symbolptr);
-            (yyval.expr) -> type = INT;                                            //TODO: fill this
-            (yyval.expr) -> entry -> type = new SymbolType(INT, SIZE_OF_INT);
-            emit("=", (yyvsp[0].symbolptr) -> value, "", (yyval.expr) -> entry -> name);
-            currExpr = (yyval.expr);
+			(yyval.expr) = new Expression(); 
+			(yyval.expr) -> entry = (yyvsp[0].symbolptr);      //Setting the entry of the expression to the symbol table entry
+            (yyval.expr) -> type = INT;      //By default the type of epresion is INT
+            (yyval.expr) -> entry -> type = new SymbolType(INT, SIZE_OF_INT);     //creating a new symbol type for the constant
+            emit("=", (yyvsp[0].symbolptr) -> value, "", (yyval.expr) -> entry -> name);        //Emitting three address code to assign the value of the constant to the a temp variable
+            currExpr = (yyval.expr);      //Helps in the conditional expressions, and loops
 		}
-#line 1918 "y.tab.c"
+#line 1917 "y.tab.c"
     break;
 
   case 5: /* primary_expression: FLOATING_CONSTANT  */
-#line 93 "TinyC3_22CS30004_22CS30061.y"
+#line 149 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "primary_expression -> FLOATING_CONSTANT" << endl;
-			(yyval.expr) = new Expression();
-			(yyval.expr) -> entry = (yyvsp[0].symbolptr);
-            (yyval.expr) -> type = INT;                                            //TODO: fill this
-			(yyval.expr) -> entry -> type = new SymbolType(FLOAT, SIZE_OF_FLOAT);  
-            emit("=", (yyvsp[0].symbolptr) -> value, "", (yyval.expr) -> entry -> name);
-            currExpr = (yyval.expr);
+			(yyval.expr) = new Expression();                                          
+			(yyval.expr) -> entry = (yyvsp[0].symbolptr);                                               
+            (yyval.expr) -> type = INT;                                               
+			(yyval.expr) -> entry -> type = new SymbolType(FLOAT, SIZE_OF_FLOAT);     
+            emit("=", (yyvsp[0].symbolptr) -> value, "", (yyval.expr) -> entry -> name);                
+            currExpr = (yyval.expr);                                                  
         }
-#line 1932 "y.tab.c"
+#line 1931 "y.tab.c"
     break;
 
   case 6: /* primary_expression: CHARACTER_CONSTANT  */
-#line 103 "TinyC3_22CS30004_22CS30061.y"
+#line 159 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "primary_expression -> CHARACTER_CONSTANT" << endl;
-			(yyval.expr) = new Expression();
-			(yyval.expr) -> entry = (yyvsp[0].symbolptr);
-            (yyval.expr) -> type = INT;                                            //TODO: fill this
-			(yyval.expr) -> entry -> type = new SymbolType(CHAR, SIZE_OF_CHAR);    
-            emit("=", (yyvsp[0].symbolptr) -> value, "", (yyval.expr) -> entry -> name);
+			(yyval.expr) = new Expression();                                                 
+			(yyval.expr) -> entry = (yyvsp[0].symbolptr);                                               
+            (yyval.expr) -> type = INT;                                               
+			(yyval.expr) -> entry -> type = new SymbolType(CHAR, SIZE_OF_CHAR);       
+            emit("=", (yyvsp[0].symbolptr) -> value, "", (yyval.expr) -> entry -> name);                
             currExpr = (yyval.expr);
 		}
-#line 1946 "y.tab.c"
+#line 1945 "y.tab.c"
     break;
 
   case 7: /* primary_expression: STRING_LITERAL  */
-#line 113 "TinyC3_22CS30004_22CS30061.y"
+#line 169 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "primary_expression -> STRING_LITERAL" << endl;
-            (yyval.expr) = new Expression();
-            (yyval.expr) -> entry = (yyvsp[0].symbolptr);
-            (yyval.expr) -> type = INT;                                            //TODO: fill this
-            (yyval.expr) -> entry = (yyvsp[0].symbolptr);
+            (yyval.expr) = new Expression();                                          
+            (yyval.expr) -> entry = (yyvsp[0].symbolptr);       //Setting the entry of the expression to the symbol table entry, it also stores the value of the string                                          
+            (yyval.expr) -> type = INT;                                            
             currExpr = (yyval.expr);
         }
-#line 1959 "y.tab.c"
+#line 1957 "y.tab.c"
     break;
 
   case 8: /* primary_expression: LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET  */
-#line 122 "TinyC3_22CS30004_22CS30061.y"
+#line 177 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "primary_expression -> LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET" << endl;
-            (yyval.expr) = (yyvsp[-1].expr);
+            (yyval.expr) = (yyvsp[-1].expr);      //ignoring the brackets
             currExpr = (yyval.expr);
         }
-#line 1969 "y.tab.c"
+#line 1967 "y.tab.c"
     break;
 
   case 9: /* postfix_expression: primary_expression  */
-#line 129 "TinyC3_22CS30004_22CS30061.y"
+#line 184 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "postfix_expression -> primary_expression" << endl;
-            // $$ = new ArrayExpression();
 			(yyval.expr) = new Expression();
 			(yyval.expr) -> arr = new ArrayExpression();
-			(yyval.expr) -> entry = (yyvsp[0].expr) -> entry;
-            if((yyvsp[0].expr) -> entry == NULL) yyerror("Hey there! something is wrong brother postfix1\n");
-			(yyval.expr) -> arr -> elementType = (yyvsp[0].expr) -> entry -> type;
-			(yyval.expr) -> arr -> addr = (yyval.expr) -> entry;
-            (yyval.expr) -> type = (yyvsp[0].expr) -> type;
-            (yyval.expr) -> truelist = (yyvsp[0].expr) -> truelist;
+			(yyval.expr) -> entry = (yyvsp[0].expr) -> entry;  //Equating the entries of the expressions to pass it on
+			(yyval.expr) -> arr -> elementType = (yyvsp[0].expr) -> entry -> type;   //As primary expression is the base case, the type of the array is the type of the primary expression
+			(yyval.expr) -> arr -> addr = (yyval.expr) -> entry;        //addr stores the temporay variable
+            (yyval.expr) -> type = (yyvsp[0].expr) -> type;                //Passing on the type
+            (yyval.expr) -> truelist = (yyvsp[0].expr) -> truelist;        //Passing on the lists
             (yyval.expr) -> falselist = (yyvsp[0].expr) -> falselist;
             (yyval.expr) -> nextlist = (yyvsp[0].expr) -> nextlist;
             currExpr = (yyval.expr);
         }
-#line 1989 "y.tab.c"
+#line 1985 "y.tab.c"
     break;
 
   case 10: /* postfix_expression: postfix_expression LEFT_SQUARE_BRACKET expression RIGHT_SQUARE_BRACKET  */
-#line 145 "TinyC3_22CS30004_22CS30061.y"
+#line 198 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "postfix_expression -> postfix_expression LEFT_SQUARE_BRACKET expression RIGHT_SQUARE_BRACKET" << endl;
-            // $$ = new ArrayExpression();
-            if((yyvsp[-3].expr) -> entry == NULL) yyerror("Hey there! something is wrong brother postfix0\n");
-			(yyval.expr) = new Expression();
+			(yyval.expr) = new Expression();          
 			(yyval.expr) -> arr = new ArrayExpression();
-			(yyval.expr) -> entry = (yyvsp[-3].expr) -> entry;
-			(yyval.expr) -> arr -> elementType = (yyvsp[-3].expr) -> arr -> elementType -> elementType;
+			(yyval.expr) -> entry = (yyvsp[-3].expr) -> entry;      //Passing it on
+			(yyval.expr) -> arr -> elementType = (yyvsp[-3].expr) -> arr -> elementType -> elementType;  //we are parsing the array from left to right so each time we go one level deep
 			(yyval.expr) -> arr -> addr = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));	//creating temp to calculate index in arr
-			(yyval.expr) -> arr -> type = ARRAY;
+			(yyval.expr) -> arr -> type = ARRAY;  //This is ARRAY
 
 			if((yyvsp[-3].expr) -> arr -> type == ARRAY)
 			{
-				Symbol *temp = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));
+				Symbol *temp = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));  //temp variable is needed
 				//sizeOfType recusively calculates the size of the arr
-				emit("*", (yyvsp[-1].expr) -> entry -> name, to_string(sizeOfType((yyval.expr) -> arr -> elementType)), temp -> name);	
-				emit("+", (yyvsp[-3].expr) -> arr -> addr -> name, temp -> name, (yyval.expr) -> arr -> addr -> name);
+				emit("*", (yyvsp[-1].expr) -> entry -> name, to_string(sizeOfType((yyval.expr) -> arr -> elementType)), temp -> name);	 //temp = index * size of element
+				emit("+", (yyvsp[-3].expr) -> arr -> addr -> name, temp -> name, (yyval.expr) -> arr -> addr -> name);      //temp = base + temp
 			}
-			else	//TODO: verify this
+			else
 			{
-                emit("*", (yyvsp[-1].expr) -> entry -> name, to_string(sizeOfType((yyval.expr) -> arr -> elementType)), (yyval.expr) -> arr -> addr -> name);
-				// emit("*", $$ -> addr -> name);
+                emit("*", (yyvsp[-1].expr) -> entry -> name, to_string(sizeOfType((yyval.expr) -> arr -> elementType)), (yyval.expr) -> arr -> addr -> name); //when we reach the base case, we calculate the final address
 			}
             currExpr = (yyval.expr);
         }
-#line 2019 "y.tab.c"
+#line 2012 "y.tab.c"
     break;
 
   case 11: /* postfix_expression: postfix_expression LEFT_ROUND_BRACKET argument_expression_list_opt RIGHT_ROUND_BRACKET  */
-#line 171 "TinyC3_22CS30004_22CS30061.y"
+#line 221 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "postfix_expression -> postfix_expression LEFT_ROUND_BRACKET argument_expression_list_opt RIGHT_ROUND_BRACKET" << endl;
-            /* do it not now */
             (yyval.expr) = new Expression();
 			(yyval.expr) -> arr = new ArrayExpression();
-			(yyval.expr) -> entry = SymbolTable::gentemp((yyvsp[-3].expr) -> arr -> elementType);
-
-            emit("call", (yyvsp[-3].expr) -> entry -> name, to_string((yyvsp[-1].cnt)), (yyval.expr) -> entry -> name);
+			(yyval.expr) -> entry = SymbolTable::gentemp((yyvsp[-3].expr) -> arr -> elementType);   //this is to store the return value of the function
+            emit("call", (yyvsp[-3].expr) -> entry -> name, to_string((yyvsp[-1].cnt)), (yyval.expr) -> entry -> name);  //emit the call instruction, with func name and no of arguments
             currExpr = (yyval.expr);
         }
-#line 2034 "y.tab.c"
+#line 2025 "y.tab.c"
     break;
 
   case 12: /* postfix_expression: postfix_expression DOT IDENTIFIER  */
-#line 181 "TinyC3_22CS30004_22CS30061.y"
+#line 229 "TinyC3_22CS30004_22CS30061.y"
                                                                                                                             {/* skip */ cerr << "postfix_expression -> postfix_expression DOT IDENTIFIER" << endl;}
-#line 2040 "y.tab.c"
+#line 2031 "y.tab.c"
     break;
 
   case 13: /* postfix_expression: postfix_expression ARROW IDENTIFIER  */
-#line 182 "TinyC3_22CS30004_22CS30061.y"
+#line 230 "TinyC3_22CS30004_22CS30061.y"
                                                                                                                             {/* skip */ cerr << "postfix_expression -> postfix_expression ARROW IDENTIFIER" << endl;}
-#line 2046 "y.tab.c"
+#line 2037 "y.tab.c"
     break;
 
   case 14: /* postfix_expression: postfix_expression INCREMENT  */
-#line 184 "TinyC3_22CS30004_22CS30061.y"
+#line 232 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "postfix_expression -> postfix_expression INCREMENT" << endl;
 			(yyval.expr) = new Expression();
 			(yyval.expr) -> arr = new ArrayExpression();
-			(yyval.expr) -> entry = SymbolTable::gentemp((yyvsp[-1].expr) -> entry -> type);
-			emit("=", (yyvsp[-1].expr) -> entry -> name, "", (yyval.expr) -> entry -> name);
-			emit("+", (yyvsp[-1].expr) -> entry -> name, "1", (yyvsp[-1].expr) -> entry -> name);
+			(yyval.expr) -> entry = SymbolTable::gentemp((yyvsp[-1].expr) -> entry -> type);    //generating a temp variable
+			emit("=", (yyvsp[-1].expr) -> entry -> name, "", (yyval.expr) -> entry -> name);    //as we doing postfix, we need to store the value of the variable before incrementing
+			emit("+", (yyvsp[-1].expr) -> entry -> name, "1", (yyvsp[-1].expr) -> entry -> name);   //now incrementing the value
             currExpr = (yyval.expr);
 		}
-#line 2060 "y.tab.c"
+#line 2051 "y.tab.c"
     break;
 
   case 15: /* postfix_expression: postfix_expression DECREMENT  */
-#line 194 "TinyC3_22CS30004_22CS30061.y"
+#line 242 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "postfix_expression -> postfix_expression DECREMENT" << endl;
 			(yyval.expr) = new Expression();
@@ -2070,144 +2061,144 @@ yyreduce:
 			emit("-", (yyvsp[-1].expr) -> entry -> name, "1", (yyvsp[-1].expr) -> entry -> name);
             currExpr = (yyval.expr);
 		}
-#line 2074 "y.tab.c"
+#line 2065 "y.tab.c"
     break;
 
   case 16: /* postfix_expression: LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET LEFT_CURLY_BRACKET initializer_list RIGHT_CURLY_BRACKET  */
-#line 203 "TinyC3_22CS30004_22CS30061.y"
-                                                                                                                            {/* doubt_skip */ cerr << "postfix_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET LEFT_CURLY_BRACKET initializer_list RIGHT_CURLY_BRACKET" << endl; yyerror("Hey there! something is wrong brother postfix2\n");}
-#line 2080 "y.tab.c"
+#line 251 "TinyC3_22CS30004_22CS30061.y"
+                                                                                                                            {/* doubt_skip */ cerr << "postfix_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET LEFT_CURLY_BRACKET initializer_list RIGHT_CURLY_BRACKET" << endl;}
+#line 2071 "y.tab.c"
     break;
 
   case 17: /* postfix_expression: LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET LEFT_CURLY_BRACKET initializer_list COMMA RIGHT_CURLY_BRACKET  */
-#line 204 "TinyC3_22CS30004_22CS30061.y"
-                                                                                                                            {/* doubt skip */ cerr << "postfix_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET LEFT_CURLY_BRACKET initializer_list COMMA RIGHT_CURLY_BRACKET" << endl; yyerror("Hey there! something is wrong brother postfix3\n");}
-#line 2086 "y.tab.c"
+#line 252 "TinyC3_22CS30004_22CS30061.y"
+                                                                                                                            {/* doubt skip */ cerr << "postfix_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET LEFT_CURLY_BRACKET initializer_list COMMA RIGHT_CURLY_BRACKET" << endl;}
+#line 2077 "y.tab.c"
     break;
 
   case 18: /* argument_expression_list: assignment_expression  */
-#line 207 "TinyC3_22CS30004_22CS30061.y"
+#line 255 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "argument_expression_list -> assignment_expression" << endl;
-			(yyval.cnt) = 1;
+			(yyval.cnt) = 1;     //base case
 			emit("param", (yyvsp[0].expr) -> entry -> name, "", "");
 		}
-#line 2096 "y.tab.c"
+#line 2087 "y.tab.c"
     break;
 
   case 19: /* argument_expression_list: argument_expression_list COMMA assignment_expression  */
-#line 213 "TinyC3_22CS30004_22CS30061.y"
+#line 261 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "argument_expression_list -> argument_expression_list COMMA assignment_expression" << endl;
-			(yyval.cnt) = (yyvsp[-2].cnt) + 1;
+			(yyval.cnt) = (yyvsp[-2].cnt) + 1;      //adding the number of arguments
 			emit("param", (yyvsp[0].expr) -> entry -> name, "", "");
+		}
+#line 2097 "y.tab.c"
+    break;
+
+  case 20: /* argument_expression_list_opt: %empty  */
+#line 268 "TinyC3_22CS30004_22CS30061.y"
+                {
+            cerr << "argument_expression_list_opt -> epsilon" << endl;
+			(yyval.cnt) = 0;       //as its epsilon, no arguments
 		}
 #line 2106 "y.tab.c"
     break;
 
-  case 20: /* argument_expression_list_opt: %empty  */
-#line 220 "TinyC3_22CS30004_22CS30061.y"
+  case 21: /* argument_expression_list_opt: argument_expression_list  */
+#line 273 "TinyC3_22CS30004_22CS30061.y"
                 {
-            cerr << "argument_expression_list_opt -> epsilon" << endl;
-			(yyval.cnt) = 0;
+            cerr << "argument_expression_list_opt -> argument_expression_list" << endl;
+			(yyval.cnt) = (yyvsp[0].cnt);        //passing on the number of arguments
 		}
 #line 2115 "y.tab.c"
     break;
 
-  case 21: /* argument_expression_list_opt: argument_expression_list  */
-#line 225 "TinyC3_22CS30004_22CS30061.y"
-                {
-            cerr << "argument_expression_list_opt -> argument_expression_list" << endl;
-			(yyval.cnt) = (yyvsp[0].cnt);
-		}
-#line 2124 "y.tab.c"
-    break;
-
   case 22: /* unary_expression: postfix_expression  */
-#line 231 "TinyC3_22CS30004_22CS30061.y"
+#line 279 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "unary_expression -> postfix_expression" << endl;
-			(yyval.expr) = (yyvsp[0].expr);
+			(yyval.expr) = (yyvsp[0].expr);    //passing on the postfix expression
             currExpr = (yyval.expr);
 		}
-#line 2134 "y.tab.c"
+#line 2125 "y.tab.c"
     break;
 
   case 23: /* unary_expression: INCREMENT unary_expression  */
-#line 237 "TinyC3_22CS30004_22CS30061.y"
+#line 285 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "unary_expression -> INCREMENT unary_expression" << endl;
-			emit("+", (yyvsp[0].expr) -> entry -> name, "1", (yyvsp[0].expr) -> entry -> name);
-			(yyval.expr) = (yyvsp[0].expr);
+			emit("+", (yyvsp[0].expr) -> entry -> name, "1", (yyvsp[0].expr) -> entry -> name);   //simply incrementing the value, and not generating a temp variable
+			(yyval.expr) = (yyvsp[0].expr);    //passing on the value
             currExpr = (yyval.expr);
 		}
-#line 2145 "y.tab.c"
+#line 2136 "y.tab.c"
     break;
 
   case 24: /* unary_expression: DECREMENT unary_expression  */
-#line 244 "TinyC3_22CS30004_22CS30061.y"
+#line 292 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "unary_expression -> DECREMENT unary_expression" << endl;
 			emit("-", (yyvsp[0].expr) -> entry -> name, "1", (yyvsp[0].expr) -> entry -> name);
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2156 "y.tab.c"
+#line 2147 "y.tab.c"
     break;
 
   case 25: /* unary_expression: unary_operator cast_expression  */
-#line 251 "TinyC3_22CS30004_22CS30061.y"
+#line 299 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "unary_expression -> unary_operator cast_expression" << endl;
 			(yyval.expr) = new Expression();
-            (yyval.expr) -> truelist = (yyvsp[0].expr) -> truelist;
+            (yyval.expr) -> truelist = (yyvsp[0].expr) -> truelist;    //passing on the lists
             (yyval.expr) -> falselist = (yyvsp[0].expr) -> falselist;
             (yyval.expr) -> nextlist = (yyvsp[0].expr) -> nextlist;
 			(yyval.expr) -> arr = new ArrayExpression();
 			if((yyvsp[-1].op) == AMPERSAND)
 			{
-				(yyval.expr) -> entry = SymbolTable::gentemp(new SymbolType(POINTER, SIZE_OF_POINTER));
-                (yyval.expr) -> entry -> type -> elementType = (yyvsp[0].expr) -> arr -> elementType;
-				if((yyvsp[0].expr) -> arr -> type == ARRAY) emit("u[]&", (yyvsp[0].expr) -> entry -> name, (yyvsp[0].expr) -> arr -> addr -> name, (yyval.expr) -> entry -> name);
-                else emit("u&", (yyvsp[0].expr) -> entry -> name, "", (yyval.expr) -> entry -> name);
+				(yyval.expr) -> entry = SymbolTable::gentemp(new SymbolType(POINTER, SIZE_OF_POINTER));   //we need a new temp
+                (yyval.expr) -> entry -> type -> elementType = (yyvsp[0].expr) -> arr -> elementType;  //setting the type of the temp, as we accessing the address
+				if((yyvsp[0].expr) -> arr -> type == ARRAY) emit("u[]&", (yyvsp[0].expr) -> entry -> name, (yyvsp[0].expr) -> arr -> addr -> name, (yyval.expr) -> entry -> name);  //if its an array, we need to access the address
+                else emit("u&", (yyvsp[0].expr) -> entry -> name, "", (yyval.expr) -> entry -> name);  //if its a pointer, we can directly access the address
 			}
 			else if((yyvsp[-1].op) == ASTERISK)
 			{
 				(yyval.expr) -> arr -> type = POINTER;
 				(yyval.expr) -> arr -> addr = SymbolTable::gentemp((yyvsp[0].expr) -> entry -> type);
-                (yyval.expr) -> entry = (yyvsp[0].expr) -> entry;
-                if((yyvsp[0].expr) -> arr -> type == ARRAY) emit("u[]*", (yyvsp[0].expr) -> entry -> name, (yyvsp[0].expr) -> arr -> addr -> name, (yyval.expr) -> arr -> addr -> name);
+                (yyval.expr) -> entry = (yyvsp[0].expr) -> entry;  //passing on the entry
+                if((yyvsp[0].expr) -> arr -> type == ARRAY) emit("u[]*", (yyvsp[0].expr) -> entry -> name, (yyvsp[0].expr) -> arr -> addr -> name, (yyval.expr) -> arr -> addr -> name); //if its an array, we need to access the value
                 else
                 {
-                    emit("u*", (yyvsp[0].expr) -> entry -> name, "", (yyval.expr) -> arr -> addr -> name);
-                    (yyval.expr) -> arr -> addr -> type = (yyvsp[0].expr) -> arr -> elementType -> elementType;
+                    emit("u*", (yyvsp[0].expr) -> entry -> name, "", (yyval.expr) -> arr -> addr -> name); //if its a pointer, we can directly access the value
+                    (yyval.expr) -> arr -> addr -> type = (yyvsp[0].expr) -> arr -> elementType -> elementType;  //setting the type of the temp, as we accessing the value meaning * of int** is int*
                 }
 			}
 			else if((yyvsp[-1].op) == PLUS)
 			{
-                (yyval.expr) = (yyvsp[0].expr);
+                (yyval.expr) = (yyvsp[0].expr);    //passing on the value
 			}
-			else if((yyvsp[-1].op) == MINUS)
+			else if((yyvsp[-1].op) == MINUS)    //simple unary negation using a temp, and then passing it
 			{
 				(yyval.expr) -> entry = SymbolTable::gentemp((yyvsp[0].expr) -> entry -> type);
 				if((yyvsp[0].expr) -> arr -> type == ARRAY) emit("u[]-", (yyvsp[0].expr) -> entry -> name, (yyvsp[0].expr) -> arr -> addr -> name, (yyval.expr) -> entry -> name);
                 else emit("u-", (yyvsp[0].expr) -> entry -> name, "", (yyval.expr) -> entry -> name);
 			}
-			else if((yyvsp[-1].op) == TILDE)
+			else if((yyvsp[-1].op) == TILDE)    //same as above
 			{
 				(yyval.expr) -> entry = SymbolTable::gentemp((yyvsp[0].expr) -> entry -> type);
 				if((yyvsp[0].expr) -> arr -> type == ARRAY) emit("u[]~", (yyvsp[0].expr) -> entry -> name, (yyvsp[0].expr) -> arr -> addr -> name, (yyval.expr) -> entry -> name);
                 else emit("u~", (yyvsp[0].expr) -> entry -> name, "", (yyval.expr) -> entry -> name);
 			}
-			else if((yyvsp[-1].op) == EXCLAMATION)
+			else if((yyvsp[-1].op) == EXCLAMATION)  //as this can represent ! in IF, ELSE and other conditional statements, we need to handle it differently
 			{
                 (yyval.expr) -> entry = SymbolTable::gentemp((yyvsp[0].expr) -> entry -> type);
-				swap((yyvsp[0].expr) -> truelist, (yyvsp[0].expr) -> falselist);
+				swap((yyvsp[0].expr) -> truelist, (yyvsp[0].expr) -> falselist);  //we swap the lists as we taking negation
                 (yyval.expr) -> truelist = (yyvsp[0].expr) -> truelist;
                 (yyval.expr) -> falselist = (yyvsp[0].expr) -> falselist;
                 (yyval.expr) -> nextlist = (yyvsp[0].expr) -> nextlist;
                 (yyval.expr) -> type = (yyvsp[0].expr) -> type;
-				if((yyvsp[0].expr) -> type != BOOL)
+				if((yyvsp[0].expr) -> type != BOOL)  // if it was not a boolean, we need to emit it as an expression
                 {
                     if((yyvsp[0].expr) -> arr -> type == ARRAY) emit("u[]!", (yyvsp[0].expr) -> entry -> name, (yyvsp[0].expr) -> arr -> addr -> name, (yyval.expr) -> entry -> name);
                     else emit("u!", (yyvsp[0].expr) -> entry -> name, "", (yyval.expr) -> entry -> name);
@@ -2215,93 +2206,93 @@ yyreduce:
 			}
             currExpr = (yyval.expr);
 		}
-#line 2219 "y.tab.c"
+#line 2210 "y.tab.c"
     break;
 
   case 26: /* unary_expression: SIZEOF unary_expression  */
-#line 309 "TinyC3_22CS30004_22CS30061.y"
+#line 357 "TinyC3_22CS30004_22CS30061.y"
                                                                                         {/* skip */ cerr << "unary_expression -> SIZEOF unary_expression" << endl;}
-#line 2225 "y.tab.c"
+#line 2216 "y.tab.c"
     break;
 
   case 27: /* unary_expression: SIZEOF LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET  */
-#line 310 "TinyC3_22CS30004_22CS30061.y"
+#line 358 "TinyC3_22CS30004_22CS30061.y"
                                                                                         {/* skip */ cerr << "unary_expression -> SIZEOF LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET" << endl;}
-#line 2231 "y.tab.c"
+#line 2222 "y.tab.c"
     break;
 
   case 28: /* unary_operator: AMPERSAND  */
-#line 313 "TinyC3_22CS30004_22CS30061.y"
+#line 361 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "unary_operator -> AMPERSAND" << endl;
 			(yyval.op) = AMPERSAND;
 		}
-#line 2240 "y.tab.c"
+#line 2231 "y.tab.c"
     break;
 
   case 29: /* unary_operator: ASTERISK  */
-#line 318 "TinyC3_22CS30004_22CS30061.y"
+#line 366 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "unary_operator -> ASTERISK" << endl;
 			(yyval.op) = ASTERISK;
 		}
-#line 2249 "y.tab.c"
+#line 2240 "y.tab.c"
     break;
 
   case 30: /* unary_operator: PLUS  */
-#line 323 "TinyC3_22CS30004_22CS30061.y"
+#line 371 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "unary_operator -> PLUS" << endl;
 			(yyval.op) = PLUS;
 		}
-#line 2258 "y.tab.c"
+#line 2249 "y.tab.c"
     break;
 
   case 31: /* unary_operator: MINUS  */
-#line 328 "TinyC3_22CS30004_22CS30061.y"
+#line 376 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "unary_operator -> MINUS" << endl;
 			(yyval.op) = MINUS;
 		}
-#line 2267 "y.tab.c"
+#line 2258 "y.tab.c"
     break;
 
   case 32: /* unary_operator: TILDE  */
-#line 333 "TinyC3_22CS30004_22CS30061.y"
+#line 381 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "unary_operator -> TILDE" << endl;
 			(yyval.op) = TILDE;
 		}
-#line 2276 "y.tab.c"
+#line 2267 "y.tab.c"
     break;
 
   case 33: /* unary_operator: EXCLAMATION  */
-#line 338 "TinyC3_22CS30004_22CS30061.y"
+#line 386 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "unary_operator -> EXCLAMATION" << endl;
 			(yyval.op) = EXCLAMATION;
 		}
-#line 2285 "y.tab.c"
+#line 2276 "y.tab.c"
     break;
 
   case 34: /* cast_expression: unary_expression  */
-#line 345 "TinyC3_22CS30004_22CS30061.y"
+#line 393 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "cast_expression -> unary_expression" << endl;
-			(yyval.expr) = (yyvsp[0].expr);
+			(yyval.expr) = (yyvsp[0].expr);    //passing on the value
             currExpr = (yyval.expr);
 		}
-#line 2295 "y.tab.c"
+#line 2286 "y.tab.c"
     break;
 
   case 35: /* cast_expression: LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET cast_expression  */
-#line 350 "TinyC3_22CS30004_22CS30061.y"
-                                                                                        {(yyval.expr) = (yyvsp[0].expr); cerr << "cast_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET cast_expression" << endl;}
-#line 2301 "y.tab.c"
+#line 398 "TinyC3_22CS30004_22CS30061.y"
+                                                                                        {convertType((yyval.expr), (yyvsp[0].expr) -> entry -> type, (yyvsp[-2].symbolptr) -> type); (yyval.expr) = (yyvsp[0].expr); cerr << "cast_expression -> LEFT_ROUND_BRACKET type_name RIGHT_ROUND_BRACKET cast_expression" << endl;}
+#line 2292 "y.tab.c"
     break;
 
   case 36: /* multiplicative_expression: cast_expression  */
-#line 353 "TinyC3_22CS30004_22CS30061.y"
+#line 401 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "multiplicative_expression -> cast_expression" << endl;
 			(yyval.expr) = new Expression();
@@ -2309,162 +2300,158 @@ yyreduce:
             (yyval.expr) -> falselist = (yyvsp[0].expr) -> falselist;
             (yyval.expr) -> nextlist = (yyvsp[0].expr) -> nextlist;
             (yyval.expr) -> type = (yyvsp[0].expr) -> type;
-			if((yyvsp[0].expr) -> arr -> type == ARRAY)
+			if((yyvsp[0].expr) -> arr -> type == ARRAY)  //if cast expression is an array, we need to handle it differently
 			{
                 SymbolType *temp = (yyvsp[0].expr) -> entry -> type;
-                while(temp -> type == ARRAY) temp = temp -> elementType;
-				(yyval.expr) -> entry = SymbolTable::gentemp(temp);
-                emit("=[]", (yyvsp[0].expr) -> entry -> name, (yyvsp[0].expr) -> arr -> addr -> name, (yyval.expr) -> entry -> name);
+                while(temp -> type == ARRAY) temp = temp -> elementType;    //we need to get the base type of the array
+				(yyval.expr) -> entry = SymbolTable::gentemp(temp);                   //generating a temp variable
+                emit("=[]", (yyvsp[0].expr) -> entry -> name, (yyvsp[0].expr) -> arr -> addr -> name, (yyval.expr) -> entry -> name);   //getting the value of the array, in a temp variable
 			}
-            else if((yyvsp[0].expr) -> arr -> type == POINTER) (yyval.expr) -> entry = (yyvsp[0].expr) -> arr -> addr;
+            else if((yyvsp[0].expr) -> arr -> type == POINTER) (yyval.expr) -> entry = (yyvsp[0].expr) -> arr -> addr;  //if it is a pointer, we will pass on the type to used it when it is dereferenced
             else (yyval.expr) -> entry = (yyvsp[0].expr) -> entry;
             currExpr = (yyval.expr);
 		}
-#line 2324 "y.tab.c"
+#line 2315 "y.tab.c"
     break;
 
   case 37: /* multiplicative_expression: multiplicative_expression ASTERISK cast_expression  */
-#line 372 "TinyC3_22CS30004_22CS30061.y"
+#line 420 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "multiplicative_expression -> multiplicative_expression ASTERISK cast_expression" << endl;
             (yyval.expr) = new Expression();
-            (yyval.expr) -> entry = SymbolTable::gentemp(typeCheck((yyvsp[-2].expr), (yyvsp[0].expr)));
+            (yyval.expr) -> entry = SymbolTable::gentemp(typeCheck((yyvsp[-2].expr), (yyvsp[0].expr)));  //type checking the operands
             emit("*", (yyvsp[-2].expr) -> entry -> name, (yyvsp[0].expr) -> entry -> name, (yyval.expr) -> entry -> name);
             currExpr = (yyval.expr);
         }
-#line 2336 "y.tab.c"
+#line 2327 "y.tab.c"
     break;
 
   case 38: /* multiplicative_expression: multiplicative_expression FORWARD_SLASH cast_expression  */
-#line 380 "TinyC3_22CS30004_22CS30061.y"
+#line 428 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "multiplicative_expression -> multiplicative_expression FORWARD_SLASH cast_expression" << endl;
             (yyval.expr) = new Expression();
-            (yyval.expr) -> entry = SymbolTable::gentemp(typeCheck((yyvsp[-2].expr), (yyvsp[0].expr)));
+            (yyval.expr) -> entry = SymbolTable::gentemp(typeCheck((yyvsp[-2].expr), (yyvsp[0].expr)));  //type checking the operands
             emit("/", (yyvsp[-2].expr) -> entry -> name, (yyvsp[0].expr) -> entry -> name, (yyval.expr) -> entry -> name);
             currExpr = (yyval.expr);
         }
-#line 2348 "y.tab.c"
+#line 2339 "y.tab.c"
     break;
 
   case 39: /* multiplicative_expression: multiplicative_expression PERCENT cast_expression  */
-#line 388 "TinyC3_22CS30004_22CS30061.y"
+#line 436 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "multiplicative_expression -> multiplicative_expression PERCENT cast_expression" << endl;
             (yyval.expr) = new Expression();
-            (yyval.expr) -> entry = SymbolTable::gentemp(typeCheck((yyvsp[-2].expr), (yyvsp[0].expr)));
+            (yyval.expr) -> entry = SymbolTable::gentemp(typeCheck((yyvsp[-2].expr), (yyvsp[0].expr)));  //type checking the operands
             emit("%", (yyvsp[-2].expr) -> entry -> name, (yyvsp[0].expr) -> entry -> name, (yyval.expr) -> entry -> name);
             currExpr = (yyval.expr);
         }
-#line 2360 "y.tab.c"
+#line 2351 "y.tab.c"
     break;
 
   case 40: /* additive_expression: multiplicative_expression  */
-#line 397 "TinyC3_22CS30004_22CS30061.y"
+#line 445 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "additive_expression -> multiplicative_expression" << endl;
-			(yyval.expr) = (yyvsp[0].expr);
+			(yyval.expr) = (yyvsp[0].expr);        //passing on the value
             currExpr = (yyval.expr);
 		}
-#line 2370 "y.tab.c"
+#line 2361 "y.tab.c"
     break;
 
   case 41: /* additive_expression: additive_expression PLUS multiplicative_expression  */
-#line 403 "TinyC3_22CS30004_22CS30061.y"
+#line 451 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "additive_expression -> additive_expression PLUS multiplicative_expression" << endl;
             (yyval.expr) = new Expression();
 			(yyval.expr) -> type = INT;
-            (yyvsp[-2].expr) -> entry -> print();
-            (yyvsp[0].expr) -> entry -> print();
-            cout << endl;
-			(yyval.expr) -> entry = SymbolTable::gentemp(typeCheck((yyvsp[-2].expr), (yyvsp[0].expr)));	//TODO: check this
+			(yyval.expr) -> entry = SymbolTable::gentemp(typeCheck((yyvsp[-2].expr), (yyvsp[0].expr)));
 			emit("+", (yyvsp[-2].expr) -> entry -> name, (yyvsp[0].expr) -> entry -> name, (yyval.expr) -> entry -> name);
             currExpr = (yyval.expr);
 		}
-#line 2386 "y.tab.c"
+#line 2374 "y.tab.c"
     break;
 
   case 42: /* additive_expression: additive_expression MINUS multiplicative_expression  */
-#line 415 "TinyC3_22CS30004_22CS30061.y"
+#line 460 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "additive_expression -> additive_expression MINUS multiplicative_expression" << endl;
             (yyval.expr) = new Expression();
 			(yyval.expr) -> type = INT;
-			(yyval.expr) -> entry = SymbolTable::gentemp(typeCheck((yyvsp[-2].expr), (yyvsp[0].expr)));	//TODO: check this
+			(yyval.expr) -> entry = SymbolTable::gentemp(typeCheck((yyvsp[-2].expr), (yyvsp[0].expr)));
 			emit("-", (yyvsp[-2].expr) -> entry -> name, (yyvsp[0].expr) -> entry -> name, (yyval.expr) -> entry -> name);
             currExpr = (yyval.expr);
 		}
-#line 2399 "y.tab.c"
+#line 2387 "y.tab.c"
     break;
 
   case 43: /* shift_expression: additive_expression  */
-#line 425 "TinyC3_22CS30004_22CS30061.y"
+#line 470 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "shift_expression -> additive_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2409 "y.tab.c"
+#line 2397 "y.tab.c"
     break;
 
   case 44: /* shift_expression: shift_expression LEFT_SHIFT additive_expression  */
-#line 431 "TinyC3_22CS30004_22CS30061.y"
+#line 476 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "shift_expression -> shift_expression LEFT_SHIFT additive_expression" << endl;
 			if((yyvsp[-2].expr) -> entry -> type -> type != INT || (yyvsp[0].expr) -> entry -> type -> type != INT) yyerror("<< must have integer arguments\n");
 			(yyval.expr) = new Expression();
 			(yyval.expr) -> type = INT;
-			(yyval.expr) -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
+			(yyval.expr) -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));
 			emit("<<", (yyvsp[-2].expr) -> entry -> name, (yyvsp[0].expr) -> entry -> name, (yyval.expr) -> entry -> name);
             currExpr = (yyval.expr);
 		}
-#line 2423 "y.tab.c"
+#line 2411 "y.tab.c"
     break;
 
   case 45: /* shift_expression: shift_expression RIGHT_SHIFT additive_expression  */
-#line 441 "TinyC3_22CS30004_22CS30061.y"
+#line 486 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "shift_expression -> shift_expression RIGHT_SHIFT additive_expression" << endl;
 			if((yyvsp[-2].expr) -> entry -> type -> type != INT || (yyvsp[0].expr) -> entry -> type -> type != INT) yyerror(">> must have integer arguments\n");
 			(yyval.expr) = new Expression();
 			(yyval.expr) -> type = INT;
-			(yyval.expr) -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));		//TODO: check this
+			(yyval.expr) -> entry = SymbolTable::gentemp(new SymbolType(INT, SIZE_OF_INT));
 			emit(">>", (yyvsp[-2].expr) -> entry -> name, (yyvsp[0].expr) -> entry -> name, (yyval.expr) -> entry -> name);
             currExpr = (yyval.expr);
 		}
-#line 2437 "y.tab.c"
+#line 2425 "y.tab.c"
     break;
 
   case 46: /* relational_expression: shift_expression  */
-#line 452 "TinyC3_22CS30004_22CS30061.y"
+#line 497 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "relational_expression -> shift_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2447 "y.tab.c"
+#line 2435 "y.tab.c"
     break;
 
   case 47: /* relational_expression: relational_expression LESS_THAN shift_expression  */
-#line 458 "TinyC3_22CS30004_22CS30061.y"
+#line 503 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "relational_expression -> relational_expression LESS_THAN shift_expression" << endl;
 			(yyval.expr) = new Expression();
-            // $$ -> entry = $1 -> entry;
-			(yyval.expr) -> type = BOOL;
-            (yyval.expr) -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));
-			(yyval.expr) -> truelist = makelist(nextinstr());
-			(yyval.expr) -> falselist = makelist(nextinstr() + 1);
+			(yyval.expr) -> type = BOOL;  //as relational expressions are boolean
+            (yyval.expr) -> entry = SymbolTable::gentemp(new SymbolType(BOOL, SIZE_OF_BOOL));     //generating a temp variable to store result of boolean operation
+			(yyval.expr) -> truelist = makelist(nextinstr());         //make the truelist containing the next instruction (if true goto __)
+			(yyval.expr) -> falselist = makelist(nextinstr() + 1);    //make the falselist containing the next instruction + 1 (else goto __)
 			emit("if <", (yyvsp[-2].expr) -> entry -> name, (yyvsp[0].expr) -> entry -> name, "__");
 			emit("goto", "", "", "__");
             currExpr = (yyval.expr);
 		}
-#line 2464 "y.tab.c"
+#line 2451 "y.tab.c"
     break;
 
   case 48: /* relational_expression: relational_expression GREATER_THAN shift_expression  */
-#line 471 "TinyC3_22CS30004_22CS30061.y"
+#line 515 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "relational_expression -> relational_expression GREATER_THAN shift_expression" << endl;
 			(yyval.expr) = new Expression();
@@ -2476,11 +2463,11 @@ yyreduce:
 			emit("goto", "", "", "__");
             currExpr = (yyval.expr);
 		}
-#line 2480 "y.tab.c"
+#line 2467 "y.tab.c"
     break;
 
   case 49: /* relational_expression: relational_expression LESS_THAN_EQUAL shift_expression  */
-#line 483 "TinyC3_22CS30004_22CS30061.y"
+#line 527 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "relational_expression -> relational_expression LESS_THAN_EQUAL shift_expression" << endl;
 			(yyval.expr) = new Expression();
@@ -2492,11 +2479,11 @@ yyreduce:
 			emit("goto", "", "", "__");
             currExpr = (yyval.expr);
 		}
-#line 2496 "y.tab.c"
+#line 2483 "y.tab.c"
     break;
 
   case 50: /* relational_expression: relational_expression GREATER_THAN_EQUAL shift_expression  */
-#line 495 "TinyC3_22CS30004_22CS30061.y"
+#line 539 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "relational_expression -> relational_expression GREATER_THAN_EQUAL shift_expression" << endl;
 			(yyval.expr) = new Expression();
@@ -2508,21 +2495,21 @@ yyreduce:
 			emit("goto", "", "", "__");
             currExpr = (yyval.expr);
 		}
-#line 2512 "y.tab.c"
+#line 2499 "y.tab.c"
     break;
 
   case 51: /* equality_expression: relational_expression  */
-#line 508 "TinyC3_22CS30004_22CS30061.y"
+#line 552 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "equality_expression -> relational_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2522 "y.tab.c"
+#line 2509 "y.tab.c"
     break;
 
   case 52: /* equality_expression: equality_expression EQUAL relational_expression  */
-#line 514 "TinyC3_22CS30004_22CS30061.y"
+#line 558 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "equality_expression -> equality_expression EQUAL relational_expression" << endl;
 			(yyval.expr) = new Expression();
@@ -2534,11 +2521,11 @@ yyreduce:
 			emit("goto", "", "", "__");
             currExpr = (yyval.expr);
 		}
-#line 2538 "y.tab.c"
+#line 2525 "y.tab.c"
     break;
 
   case 53: /* equality_expression: equality_expression NOT_EQUAL relational_expression  */
-#line 526 "TinyC3_22CS30004_22CS30061.y"
+#line 570 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "equality_expression -> equality_expression NOT_EQUAL relational_expression" << endl;
 			(yyval.expr) = new Expression();
@@ -2550,21 +2537,21 @@ yyreduce:
 			emit("goto", "", "", "__");
             currExpr = (yyval.expr);
 		}
-#line 2554 "y.tab.c"
+#line 2541 "y.tab.c"
     break;
 
   case 54: /* AND_expression: equality_expression  */
-#line 539 "TinyC3_22CS30004_22CS30061.y"
+#line 583 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "AND_expression -> equality_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2564 "y.tab.c"
+#line 2551 "y.tab.c"
     break;
 
   case 55: /* AND_expression: AND_expression AMPERSAND equality_expression  */
-#line 545 "TinyC3_22CS30004_22CS30061.y"
+#line 589 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "AND_expression -> AND_expression AMPERSAND equality_expression" << endl;
 			if((yyvsp[-2].expr) -> entry -> type -> type != INT || (yyvsp[0].expr) -> entry -> type -> type != INT) yyerror("& must have integer arguments");
@@ -2574,21 +2561,21 @@ yyreduce:
 			emit("&", (yyvsp[-2].expr) -> entry -> name, (yyvsp[0].expr) -> entry -> name, (yyval.expr) -> entry -> name);
             currExpr = (yyval.expr);
 		}
-#line 2578 "y.tab.c"
+#line 2565 "y.tab.c"
     break;
 
   case 56: /* exclusive_OR_expression: AND_expression  */
-#line 556 "TinyC3_22CS30004_22CS30061.y"
+#line 600 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "exclusive_OR_expression -> AND_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2588 "y.tab.c"
+#line 2575 "y.tab.c"
     break;
 
   case 57: /* exclusive_OR_expression: exclusive_OR_expression CARET AND_expression  */
-#line 562 "TinyC3_22CS30004_22CS30061.y"
+#line 606 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "exclusive_OR_expression -> exclusive_OR_expression CARET AND_expression" << endl;
 			if((yyvsp[-2].expr) -> entry -> type -> type != INT || (yyvsp[0].expr) -> entry -> type -> type != INT) yyerror("^ must have integer arguments");
@@ -2598,21 +2585,21 @@ yyreduce:
 			emit("^", (yyvsp[-2].expr) -> entry -> name, (yyvsp[0].expr) -> entry -> name, (yyval.expr) -> entry -> name);
             currExpr = (yyval.expr);
 		}
-#line 2602 "y.tab.c"
+#line 2589 "y.tab.c"
     break;
 
   case 58: /* inclusive_OR_expression: exclusive_OR_expression  */
-#line 573 "TinyC3_22CS30004_22CS30061.y"
+#line 617 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "inclusive_OR_expression -> exclusive_OR_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2612 "y.tab.c"
+#line 2599 "y.tab.c"
     break;
 
   case 59: /* inclusive_OR_expression: inclusive_OR_expression PIPE exclusive_OR_expression  */
-#line 579 "TinyC3_22CS30004_22CS30061.y"
+#line 623 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "inclusive_OR_expression -> inclusive_OR_expression PIPE exclusive_OR_expression" << endl;
 			if((yyvsp[-2].expr) -> entry -> type -> type != INT || (yyvsp[0].expr) -> entry -> type -> type != INT) yyerror("| must have integer arguments");
@@ -2622,21 +2609,21 @@ yyreduce:
 			emit("|", (yyvsp[-2].expr) -> entry -> name, (yyvsp[0].expr) -> entry -> name, (yyval.expr) -> entry -> name);
             currExpr = (yyval.expr);
 		}
-#line 2626 "y.tab.c"
+#line 2613 "y.tab.c"
     break;
 
   case 60: /* logical_AND_expression: inclusive_OR_expression  */
-#line 590 "TinyC3_22CS30004_22CS30061.y"
+#line 634 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "logical_AND_expression -> inclusive_OR_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2636 "y.tab.c"
+#line 2623 "y.tab.c"
     break;
 
   case 61: /* logical_AND_expression: logical_AND_expression LOGICAL_AND CB M inclusive_OR_expression  */
-#line 596 "TinyC3_22CS30004_22CS30061.y"
+#line 640 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "logical_AND_expression -> logical_AND_expression LOGICAL_AND M inclusive_OR_expression" << endl;
             convertToBool((yyvsp[-4].expr));
@@ -2649,21 +2636,21 @@ yyreduce:
 			(yyval.expr) -> falselist = merge((yyvsp[-4].expr) -> falselist, (yyvsp[0].expr) -> falselist);
             currExpr = (yyval.expr);
 		}
-#line 2653 "y.tab.c"
+#line 2640 "y.tab.c"
     break;
 
   case 62: /* logical_OR_expression: logical_AND_expression  */
-#line 610 "TinyC3_22CS30004_22CS30061.y"
+#line 654 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "logical_OR_expression -> logical_AND_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2663 "y.tab.c"
+#line 2650 "y.tab.c"
     break;
 
   case 63: /* logical_OR_expression: logical_OR_expression LOGICAL_OR CB M logical_AND_expression  */
-#line 616 "TinyC3_22CS30004_22CS30061.y"
+#line 660 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "logical_OR_expression -> logical_OR_expression LOGICAL_OR M logical_AND_expression" << endl;
 			convertToBool((yyvsp[-4].expr));
@@ -2676,37 +2663,37 @@ yyreduce:
 			(yyval.expr) -> falselist = (yyvsp[0].expr) -> falselist;
             currExpr = (yyval.expr);
 		}
-#line 2680 "y.tab.c"
+#line 2667 "y.tab.c"
     break;
 
   case 64: /* conditional_expression: logical_OR_expression  */
-#line 630 "TinyC3_22CS30004_22CS30061.y"
+#line 674 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "conditional_expression -> logical_OR_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2690 "y.tab.c"
+#line 2677 "y.tab.c"
     break;
 
   case 65: /* conditional_expression: logical_OR_expression QUESTION_MARK expression COLON conditional_expression  */
-#line 635 "TinyC3_22CS30004_22CS30061.y"
+#line 679 "TinyC3_22CS30004_22CS30061.y"
                                                                                             {/* skip */ cerr << "conditional_expression -> logical_OR_expression QUESTION_MARK expression COLON conditional_expression" << endl;}
-#line 2696 "y.tab.c"
+#line 2683 "y.tab.c"
     break;
 
   case 66: /* assignment_expression: conditional_expression  */
-#line 638 "TinyC3_22CS30004_22CS30061.y"
+#line 682 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "assignment_expression -> conditional_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2706 "y.tab.c"
+#line 2693 "y.tab.c"
     break;
 
   case 67: /* assignment_expression: unary_expression assignment_operator assignment_expression  */
-#line 644 "TinyC3_22CS30004_22CS30061.y"
+#line 688 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "assignment_expression -> unary_expression assignment_operator assignment_expression" << endl;
             convertType((yyvsp[-2].expr), (yyvsp[0].expr) -> entry -> type, (yyvsp[-2].expr) -> arr -> addr -> type);
@@ -2716,405 +2703,404 @@ yyreduce:
             (yyval.expr) = (yyvsp[-2].expr);
             currExpr = (yyval.expr);
         }
-#line 2720 "y.tab.c"
+#line 2707 "y.tab.c"
     break;
 
   case 68: /* assignment_expression_opt: %empty  */
-#line 655 "TinyC3_22CS30004_22CS30061.y"
+#line 699 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "assignment_expression_opt -> epsilon" << endl;
 			(yyval.expr) = new Expression();
             currExpr = (yyval.expr);
 		}
-#line 2730 "y.tab.c"
+#line 2717 "y.tab.c"
     break;
 
   case 69: /* assignment_expression_opt: assignment_expression  */
-#line 661 "TinyC3_22CS30004_22CS30061.y"
+#line 705 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "assignment_expression_opt -> assignment_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2740 "y.tab.c"
+#line 2727 "y.tab.c"
     break;
 
   case 70: /* assignment_operator: ASSIGNMENT  */
-#line 668 "TinyC3_22CS30004_22CS30061.y"
+#line 712 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "assignment_operator -> ASSIGNMENT" << endl;
 			//do nothing
 		}
-#line 2749 "y.tab.c"
+#line 2736 "y.tab.c"
     break;
 
   case 71: /* assignment_operator: MULTIPLY_ASSIGNMENT  */
-#line 672 "TinyC3_22CS30004_22CS30061.y"
+#line 716 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "assignment_operator -> MULTIPLY_ASSIGNMENT" << endl;}
-#line 2755 "y.tab.c"
+#line 2742 "y.tab.c"
     break;
 
   case 72: /* assignment_operator: DIVIDE_ASSIGNMENT  */
-#line 673 "TinyC3_22CS30004_22CS30061.y"
+#line 717 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "assignment_operator -> DIVIDE_ASSIGNMENT" << endl;}
-#line 2761 "y.tab.c"
+#line 2748 "y.tab.c"
     break;
 
   case 73: /* assignment_operator: MOD_ASSIGNMENT  */
-#line 674 "TinyC3_22CS30004_22CS30061.y"
+#line 718 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "assignment_operator -> MOD_ASSIGNMENT" << endl;}
-#line 2767 "y.tab.c"
+#line 2754 "y.tab.c"
     break;
 
   case 74: /* assignment_operator: ADD_ASSIGNMENT  */
-#line 675 "TinyC3_22CS30004_22CS30061.y"
+#line 719 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "assignment_operator -> ADD_ASSIGNMENT" << endl;}
-#line 2773 "y.tab.c"
+#line 2760 "y.tab.c"
     break;
 
   case 75: /* assignment_operator: SUBTRACT_ASSIGNMENT  */
-#line 676 "TinyC3_22CS30004_22CS30061.y"
+#line 720 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "assignment_operator -> SUBTRACT_ASSIGNMENT" << endl;}
-#line 2779 "y.tab.c"
+#line 2766 "y.tab.c"
     break;
 
   case 76: /* assignment_operator: LEFT_SHIFT_ASSIGNMENT  */
-#line 677 "TinyC3_22CS30004_22CS30061.y"
+#line 721 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "assignment_operator -> LEFT_SHIFT_ASSIGNMENT" << endl;}
-#line 2785 "y.tab.c"
+#line 2772 "y.tab.c"
     break;
 
   case 77: /* assignment_operator: RIGHT_SHIFT_ASSIGNMENT  */
-#line 678 "TinyC3_22CS30004_22CS30061.y"
+#line 722 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "assignment_operator -> RIGHT_SHIFT_ASSIGNMENT" << endl;}
-#line 2791 "y.tab.c"
+#line 2778 "y.tab.c"
     break;
 
   case 78: /* assignment_operator: BITWISE_AND_ASSIGNMENT  */
-#line 679 "TinyC3_22CS30004_22CS30061.y"
+#line 723 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "assignment_operator -> BITWISE_AND_ASSIGNMENT" << endl;}
-#line 2797 "y.tab.c"
+#line 2784 "y.tab.c"
     break;
 
   case 79: /* assignment_operator: BITWISE_XOR_ASSIGNMENT  */
-#line 680 "TinyC3_22CS30004_22CS30061.y"
+#line 724 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "assignment_operator -> BITWISE_XOR_ASSIGNMENT" << endl;}
-#line 2803 "y.tab.c"
+#line 2790 "y.tab.c"
     break;
 
   case 80: /* assignment_operator: BITWISE_OR_ASSIGNMENT  */
-#line 681 "TinyC3_22CS30004_22CS30061.y"
+#line 725 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "assignment_operator -> BITWISE_OR_ASSIGNMENT" << endl;}
-#line 2809 "y.tab.c"
+#line 2796 "y.tab.c"
     break;
 
   case 81: /* expression: assignment_expression  */
-#line 684 "TinyC3_22CS30004_22CS30061.y"
+#line 728 "TinyC3_22CS30004_22CS30061.y"
                 {
             cerr << "expression -> assignment_expression" << endl;
 			(yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
 		}
-#line 2819 "y.tab.c"
+#line 2806 "y.tab.c"
     break;
 
   case 82: /* expression: expression COMMA assignment_expression  */
-#line 689 "TinyC3_22CS30004_22CS30061.y"
+#line 733 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "expression -> expression COMMA assignment_expression" << endl;}
-#line 2825 "y.tab.c"
+#line 2812 "y.tab.c"
     break;
 
   case 83: /* expression_opt: %empty  */
-#line 692 "TinyC3_22CS30004_22CS30061.y"
+#line 736 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "expression_opt -> epsilon" << endl;
             (yyval.expr) = NULL;				//verify this
             currExpr = (yyval.expr);
         }
-#line 2835 "y.tab.c"
+#line 2822 "y.tab.c"
     break;
 
   case 84: /* expression_opt: expression  */
-#line 698 "TinyC3_22CS30004_22CS30061.y"
+#line 742 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "expression_opt -> expression" << endl;
             (yyval.expr) = (yyvsp[0].expr);
             currExpr = (yyval.expr);
         }
-#line 2845 "y.tab.c"
+#line 2832 "y.tab.c"
     break;
 
   case 85: /* constant_expression: conditional_expression  */
-#line 704 "TinyC3_22CS30004_22CS30061.y"
+#line 748 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip due to parent*/ cerr << "constant_expression -> conditional_expression" << endl;}
-#line 2851 "y.tab.c"
+#line 2838 "y.tab.c"
     break;
 
   case 86: /* declaration: declaration_specifiers init_declarator_list_opt SEMICOLON  */
-#line 709 "TinyC3_22CS30004_22CS30061.y"
+#line 753 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "declaration -> declaration_specifiers init_declarator_list_opt SEMICOLON" << endl;
             // do nothing
         }
-#line 2860 "y.tab.c"
+#line 2847 "y.tab.c"
     break;
 
   case 87: /* declaration_specifiers: storage_class_specifier declaration_specifiers_opt  */
-#line 714 "TinyC3_22CS30004_22CS30061.y"
+#line 758 "TinyC3_22CS30004_22CS30061.y"
                                                                                 {/* skip */ cerr << "declaration_specifiers -> storage_class_specifier declaration_specifiers_opt" << endl;}
-#line 2866 "y.tab.c"
+#line 2853 "y.tab.c"
     break;
 
   case 88: /* declaration_specifiers: type_specifier declaration_specifiers_opt  */
-#line 716 "TinyC3_22CS30004_22CS30061.y"
+#line 760 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "declaration_specifiers -> type_specifier declaration_specifiers_opt" << endl;
             // do nothing
         }
-#line 2875 "y.tab.c"
+#line 2862 "y.tab.c"
     break;
 
   case 89: /* declaration_specifiers: type_qualifier declaration_specifiers_opt  */
-#line 720 "TinyC3_22CS30004_22CS30061.y"
+#line 764 "TinyC3_22CS30004_22CS30061.y"
                                                                                 {/* skip */ cerr << "declaration_specifiers -> type_qualifier declaration_specifiers_opt" << endl;}
-#line 2881 "y.tab.c"
+#line 2868 "y.tab.c"
     break;
 
   case 90: /* declaration_specifiers: function_specifier declaration_specifiers_opt  */
-#line 721 "TinyC3_22CS30004_22CS30061.y"
+#line 765 "TinyC3_22CS30004_22CS30061.y"
                                                                                 {/* skip */ cerr << "declaration_specifiers -> function_specifier declaration_specifiers_opt" << endl;}
-#line 2887 "y.tab.c"
+#line 2874 "y.tab.c"
     break;
 
   case 91: /* declaration_specifiers_opt: %empty  */
-#line 723 "TinyC3_22CS30004_22CS30061.y"
+#line 767 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "declaration_specifiers_opt -> epsilon" << endl;}
-#line 2893 "y.tab.c"
+#line 2880 "y.tab.c"
     break;
 
   case 92: /* declaration_specifiers_opt: declaration_specifiers  */
-#line 724 "TinyC3_22CS30004_22CS30061.y"
+#line 768 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "declaration_specifiers_opt -> declaration_specifiers" << endl;}
-#line 2899 "y.tab.c"
+#line 2886 "y.tab.c"
     break;
 
   case 93: /* init_declarator_list_opt: %empty  */
-#line 726 "TinyC3_22CS30004_22CS30061.y"
+#line 770 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "init_declarator_list_opt -> epsilon" << endl;}
-#line 2905 "y.tab.c"
+#line 2892 "y.tab.c"
     break;
 
   case 94: /* init_declarator_list_opt: init_declarator_list  */
-#line 727 "TinyC3_22CS30004_22CS30061.y"
+#line 771 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "init_declarator_list_opt -> init_declarator_list" << endl;}
-#line 2911 "y.tab.c"
+#line 2898 "y.tab.c"
     break;
 
   case 95: /* init_declarator_list: init_declarator  */
-#line 730 "TinyC3_22CS30004_22CS30061.y"
+#line 774 "TinyC3_22CS30004_22CS30061.y"
         {
             (yyval.symbolptr) = (yyvsp[0].symbolptr);
             cerr << "init_declarator_list -> init_declarator" << endl;
         }
-#line 2920 "y.tab.c"
+#line 2907 "y.tab.c"
     break;
 
   case 96: /* init_declarator_list: init_declarator_list COMMA init_declarator  */
-#line 735 "TinyC3_22CS30004_22CS30061.y"
+#line 779 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "init_declarator_list -> init_declarator_list COMMA init_declarator" << endl;
             //do nothing, type already stored in global variable
         }
-#line 2929 "y.tab.c"
+#line 2916 "y.tab.c"
     break;
 
   case 97: /* init_declarator: declarator  */
-#line 741 "TinyC3_22CS30004_22CS30061.y"
+#line 785 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "init_declarator -> declarator" << endl;
             (yyval.symbolptr) = (yyvsp[0].symbolptr);
         }
-#line 2938 "y.tab.c"
+#line 2925 "y.tab.c"
     break;
 
   case 98: /* init_declarator: declarator ASSIGNMENT initializer  */
-#line 746 "TinyC3_22CS30004_22CS30061.y"
+#line 790 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "init_declarator -> declarator ASSIGNMENT initializer" << endl;
-            // if($3 ->  value == "") yyerror("Hey there! something is wrong brother init_declarator1\n");
             (yyvsp[-2].symbolptr) -> value = (yyvsp[0].symbolptr) -> value;
             emit("=", (yyvsp[0].symbolptr) -> name, "", (yyvsp[-2].symbolptr) -> name);
         }
-#line 2949 "y.tab.c"
+#line 2935 "y.tab.c"
     break;
 
   case 99: /* storage_class_specifier: EXTERN  */
-#line 753 "TinyC3_22CS30004_22CS30061.y"
+#line 796 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "storage_class_specifier -> EXTERN" << endl;}
-#line 2955 "y.tab.c"
+#line 2941 "y.tab.c"
     break;
 
   case 100: /* storage_class_specifier: STATIC  */
-#line 754 "TinyC3_22CS30004_22CS30061.y"
+#line 797 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "storage_class_specifier -> STATIC" << endl;}
-#line 2961 "y.tab.c"
+#line 2947 "y.tab.c"
     break;
 
   case 101: /* storage_class_specifier: AUTO  */
-#line 755 "TinyC3_22CS30004_22CS30061.y"
+#line 798 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "storage_class_specifier -> AUTO" << endl;}
-#line 2967 "y.tab.c"
+#line 2953 "y.tab.c"
     break;
 
   case 102: /* storage_class_specifier: REGISTER  */
-#line 756 "TinyC3_22CS30004_22CS30061.y"
+#line 799 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "storage_class_specifier -> REGISTER" << endl;}
-#line 2973 "y.tab.c"
+#line 2959 "y.tab.c"
     break;
 
   case 103: /* type_specifier: VOID  */
-#line 759 "TinyC3_22CS30004_22CS30061.y"
+#line 802 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "type_specifier -> VOID" << endl;
             currType = VOID;
         }
-#line 2982 "y.tab.c"
+#line 2968 "y.tab.c"
     break;
 
   case 104: /* type_specifier: CHAR  */
-#line 764 "TinyC3_22CS30004_22CS30061.y"
+#line 807 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "type_specifier -> CHAR" << endl;
             currType = CHAR;
         }
-#line 2991 "y.tab.c"
+#line 2977 "y.tab.c"
     break;
 
   case 105: /* type_specifier: SHORT  */
-#line 768 "TinyC3_22CS30004_22CS30061.y"
+#line 811 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "type_specifier -> SHORT" << endl;}
-#line 2997 "y.tab.c"
+#line 2983 "y.tab.c"
     break;
 
   case 106: /* type_specifier: INT  */
-#line 770 "TinyC3_22CS30004_22CS30061.y"
+#line 813 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "type_specifier -> INT" << endl;
             currType = INT;
         }
-#line 3006 "y.tab.c"
+#line 2992 "y.tab.c"
     break;
 
   case 107: /* type_specifier: LONG  */
-#line 774 "TinyC3_22CS30004_22CS30061.y"
+#line 817 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "type_specifier -> LONG" << endl;}
-#line 3012 "y.tab.c"
+#line 2998 "y.tab.c"
     break;
 
   case 108: /* type_specifier: FLOAT  */
-#line 776 "TinyC3_22CS30004_22CS30061.y"
+#line 819 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "type_specifier -> FLOAT" << endl;
             currType = FLOAT;
         }
-#line 3021 "y.tab.c"
+#line 3007 "y.tab.c"
     break;
 
   case 109: /* type_specifier: DOUBLE  */
-#line 780 "TinyC3_22CS30004_22CS30061.y"
+#line 823 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "type_specifier -> DOUBLE" << endl;}
-#line 3027 "y.tab.c"
+#line 3013 "y.tab.c"
     break;
 
   case 110: /* type_specifier: SIGNED  */
-#line 781 "TinyC3_22CS30004_22CS30061.y"
+#line 824 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "type_specifier -> SIGNED" << endl;}
-#line 3033 "y.tab.c"
+#line 3019 "y.tab.c"
     break;
 
   case 111: /* type_specifier: UNSIGNED  */
-#line 782 "TinyC3_22CS30004_22CS30061.y"
+#line 825 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "type_specifier -> UNSIGNED" << endl;}
-#line 3039 "y.tab.c"
+#line 3025 "y.tab.c"
     break;
 
   case 112: /* type_specifier: BOOL  */
-#line 784 "TinyC3_22CS30004_22CS30061.y"
+#line 827 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "type_specifier -> BOOL" << endl;
             currType = BOOL;
         }
-#line 3048 "y.tab.c"
+#line 3034 "y.tab.c"
     break;
 
   case 113: /* type_specifier: COMPLEX  */
-#line 788 "TinyC3_22CS30004_22CS30061.y"
+#line 831 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "type_specifier -> COMPLEX" << endl;}
-#line 3054 "y.tab.c"
+#line 3040 "y.tab.c"
     break;
 
   case 114: /* type_specifier: IMAGINARY  */
-#line 789 "TinyC3_22CS30004_22CS30061.y"
+#line 832 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "type_specifier -> IMAGINARY" << endl;}
-#line 3060 "y.tab.c"
+#line 3046 "y.tab.c"
     break;
 
   case 115: /* specifier_qualifier_list: type_specifier specifier_qualifier_list_opt  */
-#line 792 "TinyC3_22CS30004_22CS30061.y"
+#line 835 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "specifier_qualifier_list -> type_specifier specifier_qualifier_list_opt" << endl;
             // do nothing, specifier qualifier should be epsilon
         }
-#line 3069 "y.tab.c"
+#line 3055 "y.tab.c"
     break;
 
   case 116: /* specifier_qualifier_list: type_qualifier specifier_qualifier_list_opt  */
-#line 796 "TinyC3_22CS30004_22CS30061.y"
+#line 839 "TinyC3_22CS30004_22CS30061.y"
                                                                                 {/* skip : something is wrong with grammar */ cerr << "specifier_qualifier_list -> type_qualifier specifier_qualifier_list_opt" << endl;}
-#line 3075 "y.tab.c"
+#line 3061 "y.tab.c"
     break;
 
   case 117: /* specifier_qualifier_list_opt: %empty  */
-#line 799 "TinyC3_22CS30004_22CS30061.y"
+#line 842 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "specifier_qualifier_list_opt -> epsilon" << endl;
             // do nothing
         }
-#line 3084 "y.tab.c"
+#line 3070 "y.tab.c"
     break;
 
   case 118: /* specifier_qualifier_list_opt: specifier_qualifier_list  */
-#line 803 "TinyC3_22CS30004_22CS30061.y"
+#line 846 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* skip */ cerr << "specifier_qualifier_list_opt -> specifier_qualifier_list" << endl;}
-#line 3090 "y.tab.c"
+#line 3076 "y.tab.c"
     break;
 
   case 119: /* type_qualifier: CONST  */
-#line 805 "TinyC3_22CS30004_22CS30061.y"
+#line 848 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* skip */ cerr << "type_qualifier -> CONST" << endl;}
-#line 3096 "y.tab.c"
+#line 3082 "y.tab.c"
     break;
 
   case 120: /* type_qualifier: RESTRICT  */
-#line 806 "TinyC3_22CS30004_22CS30061.y"
+#line 849 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* skip */ cerr << "type_qualifier -> RESTRICT" << endl;}
-#line 3102 "y.tab.c"
+#line 3088 "y.tab.c"
     break;
 
   case 121: /* type_qualifier: VOLATILE  */
-#line 807 "TinyC3_22CS30004_22CS30061.y"
+#line 850 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* skip */ cerr << "type_qualifier -> VOLATILE" << endl;}
-#line 3108 "y.tab.c"
+#line 3094 "y.tab.c"
     break;
 
   case 122: /* function_specifier: INLINE  */
-#line 809 "TinyC3_22CS30004_22CS30061.y"
+#line 852 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* skip */ cerr << "function_specifier -> INLINE" << endl;}
-#line 3114 "y.tab.c"
+#line 3100 "y.tab.c"
     break;
 
   case 123: /* declarator: pointer_opt direct_declarator  */
-#line 812 "TinyC3_22CS30004_22CS30061.y"
+#line 855 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "declarator -> pointer_opt direct_declarator" << endl;
             if((yyvsp[-1].symbolptr) != NULL)
@@ -3126,35 +3112,34 @@ yyreduce:
             }
             (yyval.symbolptr) = (yyvsp[0].symbolptr);
         }
-#line 3130 "y.tab.c"
+#line 3116 "y.tab.c"
     break;
 
   case 124: /* direct_declarator: IDENTIFIER  */
-#line 825 "TinyC3_22CS30004_22CS30061.y"
+#line 868 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "direct_declarator -> IDENTIFIER" << endl;
             (yyvsp[0].symbolptr) -> update(new SymbolType(currType));
             (yyval.symbolptr) = (yyvsp[0].symbolptr);
         }
-#line 3140 "y.tab.c"
+#line 3126 "y.tab.c"
     break;
 
   case 125: /* direct_declarator: LEFT_ROUND_BRACKET declarator RIGHT_ROUND_BRACKET  */
-#line 831 "TinyC3_22CS30004_22CS30061.y"
+#line 874 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "direct_declarator -> LEFT_ROUND_BRACKET declarator RIGHT_ROUND_BRACKET" << endl;
             (yyval.symbolptr) = (yyvsp[-1].symbolptr);
         }
-#line 3149 "y.tab.c"
+#line 3135 "y.tab.c"
     break;
 
   case 126: /* direct_declarator: direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list_opt assignment_expression_opt RIGHT_SQUARE_BRACKET  */
-#line 836 "TinyC3_22CS30004_22CS30061.y"
+#line 879 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "direct_declarator -> direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list_opt assignment_expression_opt RIGHT_SQUARE_BRACKET" << endl;
             // type_qualifier_list_opt should always terminate at epsilon
             // assignment_expression_opt must have a value that is not epsilon
-            if((yyvsp[-1].expr) -> entry -> value == "") yyerror("Hey there! something is wrong brother direct_declarator1\n");
             convertToInt((yyvsp[-1].expr));
 
             SymbolType *newType = new SymbolType(ARRAY, stoi((yyvsp[-1].expr) -> entry -> value), new SymbolType(currType));
@@ -3169,29 +3154,29 @@ yyreduce:
             (yyval.symbolptr) = (yyvsp[-4].symbolptr);
             
         }
-#line 3173 "y.tab.c"
+#line 3158 "y.tab.c"
     break;
 
   case 127: /* direct_declarator: direct_declarator LEFT_SQUARE_BRACKET STATIC type_qualifier_list_opt assignment_expression RIGHT_SQUARE_BRACKET  */
-#line 855 "TinyC3_22CS30004_22CS30061.y"
-                                                                                                                                    {/* skip */ cerr << "direct_declarator -> direct_declarator LEFT_SQUARE_BRACKET STATIC type_qualifier_list_opt assignment_expression RIGHT_SQUARE_BRACKET" << endl; yyerror("Hey there! something is wrong brother direct_declarator2\n");}
-#line 3179 "y.tab.c"
+#line 897 "TinyC3_22CS30004_22CS30061.y"
+                                                                                                                                    {/* skip */ cerr << "direct_declarator -> direct_declarator LEFT_SQUARE_BRACKET STATIC type_qualifier_list_opt assignment_expression RIGHT_SQUARE_BRACKET" << endl;}
+#line 3164 "y.tab.c"
     break;
 
   case 128: /* direct_declarator: direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list STATIC assignment_expression RIGHT_CURLY_BRACKET  */
-#line 856 "TinyC3_22CS30004_22CS30061.y"
-                                                                                                                                    {/* skip */ cerr << "direct_declarator -> direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list STATIC assignment_expression RIGHT_CURLY_BRACKET" << endl; yyerror("Hey there! something is wrong brother direct_declarator2\n");}
-#line 3185 "y.tab.c"
+#line 898 "TinyC3_22CS30004_22CS30061.y"
+                                                                                                                                    {/* skip */ cerr << "direct_declarator -> direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list STATIC assignment_expression RIGHT_CURLY_BRACKET" << endl;}
+#line 3170 "y.tab.c"
     break;
 
   case 129: /* direct_declarator: direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list_opt ASTERISK RIGHT_SQUARE_BRACKET  */
-#line 857 "TinyC3_22CS30004_22CS30061.y"
-                                                                                                                                    {/* doubt skip */ cerr << "direct_declarator -> direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list_opt ASTERISK RIGHT_SQUARE_BRACKET" << endl; yyerror("Hey there! something is wrong brother direct_declarator2\n");}
-#line 3191 "y.tab.c"
+#line 899 "TinyC3_22CS30004_22CS30061.y"
+                                                                                                                                    {/* doubt skip */ cerr << "direct_declarator -> direct_declarator LEFT_SQUARE_BRACKET type_qualifier_list_opt ASTERISK RIGHT_SQUARE_BRACKET" << endl;}
+#line 3176 "y.tab.c"
     break;
 
   case 130: /* direct_declarator: direct_declarator LEFT_ROUND_BRACKET CT parameter_type_list RIGHT_ROUND_BRACKET  */
-#line 859 "TinyC3_22CS30004_22CS30061.y"
+#line 901 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "direct_declarator -> direct_declarator LEFT_ROUND_BRACKET CT parameter_type_list RIGHT_ROUND_BRACKET" << endl;
             SymbolTable *funcTable = currST;
@@ -3199,456 +3184,453 @@ yyreduce:
             currST -> table.pop_back();
             funcTable -> name = "$function_" + (yyvsp[-4].symbolptr) -> name;
             (yyvsp[-4].symbolptr) -> nestedTable = funcTable;
-            // funcTable -> print();           //TODO: free the lost table
-            SymbolType *temp = new SymbolType((yyvsp[-4].symbolptr) -> type -> type, 0, (yyvsp[-4].symbolptr) -> type -> elementType);
-            (yyvsp[-4].symbolptr) -> update(new SymbolType(FUNCTION, SIZE_OF_FUNCTION, temp));
-            // $1 -> type -> elementType -> print();
-            // cout << $1 -> name << endl;
             currSymbol = (yyvsp[-4].symbolptr);
             (yyval.symbolptr) = (yyvsp[-4].symbolptr);
         }
-#line 3211 "y.tab.c"
+#line 3191 "y.tab.c"
     break;
 
   case 131: /* direct_declarator: direct_declarator LEFT_ROUND_BRACKET CT identifier_list_opt RIGHT_ROUND_BRACKET  */
-#line 875 "TinyC3_22CS30004_22CS30061.y"
+#line 912 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "direct_declarator -> direct_declarator LEFT_ROUND_BRACKET CT identifier_list_opt RIGHT_ROUND_BRACKET" << endl;
-            if((yyvsp[-1].symbolptr) != NULL) yyerror("Hey there! something is wrong brother direct_declarator2\n");
             SymbolTable *funcTable = currST;
             switchTable(currST -> parent);
             currST -> table.pop_back();
             funcTable -> name = "$function_" + (yyvsp[-4].symbolptr) -> name;
             (yyvsp[-4].symbolptr) -> nestedTable = funcTable;
-            (yyvsp[-4].symbolptr) -> update(new SymbolType(FUNCTION, SIZE_OF_FUNCTION, (yyvsp[-4].symbolptr) -> type));
+            // SymbolType *temp = new SymbolType($1 -> type -> type, 0, $1 -> type -> elementType);
+            // $1 -> update(new SymbolType(FUNCTION, SIZE_OF_FUNCTION, temp));
             currSymbol = (yyvsp[-4].symbolptr);
             (yyval.symbolptr) = (yyvsp[-4].symbolptr);
         }
-#line 3228 "y.tab.c"
+#line 3208 "y.tab.c"
     break;
 
   case 132: /* pointer: ASTERISK type_qualifier_list_opt  */
-#line 889 "TinyC3_22CS30004_22CS30061.y"
+#line 926 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "pointer -> ASTERISK type_qualifier_list_opt" << endl;
             /* type_qualifier_list_opt should always terminate at epsilon */
-            if((yyvsp[0].symbolptr) != NULL) yyerror("Hey there! something is wrong brother pointer1\n");
             (yyval.symbolptr) = new Symbol();
             (yyval.symbolptr) -> type = new SymbolType(POINTER, SIZE_OF_POINTER);
         }
-#line 3240 "y.tab.c"
+#line 3219 "y.tab.c"
     break;
 
   case 133: /* pointer: ASTERISK type_qualifier_list_opt pointer  */
-#line 897 "TinyC3_22CS30004_22CS30061.y"
+#line 933 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "pointer -> ASTERISK type_qualifier_list_opt pointer" << endl;
             /* type_qualifier_list_opt should always terminate at epsilon */
-            if((yyvsp[-1].symbolptr) != NULL) yyerror("Hey there! something is wrong brother pointer2\n");
             (yyval.symbolptr) = new Symbol();
             (yyval.symbolptr) -> type = new SymbolType(POINTER, SIZE_OF_POINTER, (yyvsp[0].symbolptr) -> type);
         }
-#line 3252 "y.tab.c"
+#line 3230 "y.tab.c"
     break;
 
   case 134: /* pointer_opt: %empty  */
-#line 906 "TinyC3_22CS30004_22CS30061.y"
+#line 941 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "pointer_opt -> epsilon" << endl;
             (yyval.symbolptr) = NULL;
         }
-#line 3261 "y.tab.c"
+#line 3239 "y.tab.c"
     break;
 
   case 135: /* pointer_opt: pointer  */
-#line 911 "TinyC3_22CS30004_22CS30061.y"
+#line 946 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "pointer_opt -> pointer" << endl;
             (yyval.symbolptr) = (yyvsp[0].symbolptr);
         }
-#line 3270 "y.tab.c"
+#line 3248 "y.tab.c"
     break;
 
   case 136: /* type_qualifier_list: type_qualifier  */
-#line 916 "TinyC3_22CS30004_22CS30061.y"
+#line 951 "TinyC3_22CS30004_22CS30061.y"
                                                                 {/* skip */ cerr << "type_qualifier_list -> type_qualifier" << endl;}
-#line 3276 "y.tab.c"
+#line 3254 "y.tab.c"
     break;
 
   case 137: /* type_qualifier_list: type_qualifier_list type_qualifier  */
-#line 917 "TinyC3_22CS30004_22CS30061.y"
+#line 952 "TinyC3_22CS30004_22CS30061.y"
                                                                 {/* skip */ cerr << "type_qualifier_list -> type_qualifier_list type_qualifier" << endl;}
-#line 3282 "y.tab.c"
+#line 3260 "y.tab.c"
     break;
 
   case 138: /* type_qualifier_list_opt: %empty  */
-#line 920 "TinyC3_22CS30004_22CS30061.y"
+#line 955 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "type_qualifier_list_opt -> epsilon" << endl;
             (yyval.symbolptr) = NULL;
         }
-#line 3291 "y.tab.c"
+#line 3269 "y.tab.c"
     break;
 
   case 139: /* type_qualifier_list_opt: type_qualifier_list  */
-#line 924 "TinyC3_22CS30004_22CS30061.y"
+#line 959 "TinyC3_22CS30004_22CS30061.y"
                                                                 {/* skip */ cerr << "type_qualifier_list_opt -> type_qualifier_list" << endl;}
-#line 3297 "y.tab.c"
+#line 3275 "y.tab.c"
     break;
 
   case 140: /* parameter_type_list: parameter_list  */
-#line 927 "TinyC3_22CS30004_22CS30061.y"
+#line 962 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "parameter_type_list -> parameter_list" << endl;
             // do nothing
             (yyval.symbolptr) = (yyvsp[0].symbolptr);
         }
-#line 3307 "y.tab.c"
+#line 3285 "y.tab.c"
     break;
 
   case 141: /* parameter_type_list: parameter_list COMMA ELLIPSIS  */
-#line 932 "TinyC3_22CS30004_22CS30061.y"
+#line 967 "TinyC3_22CS30004_22CS30061.y"
                                                                 {/* skip */ cerr << "parameter_type_list -> parameter_list COMMA ELLIPSIS" << endl;}
-#line 3313 "y.tab.c"
+#line 3291 "y.tab.c"
     break;
 
   case 142: /* parameter_list: parameter_declaration  */
-#line 935 "TinyC3_22CS30004_22CS30061.y"
+#line 970 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "parameter_list -> parameter_declaration" << endl;
             // do nothing
         }
-#line 3322 "y.tab.c"
+#line 3300 "y.tab.c"
     break;
 
   case 143: /* parameter_list: parameter_list COMMA parameter_declaration  */
-#line 940 "TinyC3_22CS30004_22CS30061.y"
+#line 975 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "parameter_list -> parameter_list COMMA parameter_declaration" << endl;
             // do nothing
         }
-#line 3331 "y.tab.c"
+#line 3309 "y.tab.c"
     break;
 
   case 144: /* parameter_declaration: declaration_specifiers declarator  */
-#line 946 "TinyC3_22CS30004_22CS30061.y"
+#line 981 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "parameter_declaration -> declaration_specifiers declarator" << endl;
             // do nothing
         }
-#line 3340 "y.tab.c"
+#line 3318 "y.tab.c"
     break;
 
   case 145: /* parameter_declaration: declaration_specifiers  */
-#line 951 "TinyC3_22CS30004_22CS30061.y"
+#line 986 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "parameter_declaration -> declaration_specifiers" << endl;
             // do nothing
         }
-#line 3349 "y.tab.c"
+#line 3327 "y.tab.c"
     break;
 
   case 146: /* identifier_list: IDENTIFIER  */
-#line 956 "TinyC3_22CS30004_22CS30061.y"
+#line 991 "TinyC3_22CS30004_22CS30061.y"
                                                                 {/* skip */ cerr << "identifier_list -> IDENTIFIER" << endl;}
-#line 3355 "y.tab.c"
+#line 3333 "y.tab.c"
     break;
 
   case 147: /* identifier_list: identifier_list COMMA IDENTIFIER  */
-#line 957 "TinyC3_22CS30004_22CS30061.y"
+#line 992 "TinyC3_22CS30004_22CS30061.y"
                                                                 {/* skip */ cerr << "identifier_list -> identifier_list COMMA IDENTIFIER" << endl;}
-#line 3361 "y.tab.c"
+#line 3339 "y.tab.c"
     break;
 
   case 148: /* identifier_list_opt: %empty  */
-#line 960 "TinyC3_22CS30004_22CS30061.y"
+#line 995 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "identifier_list_opt -> epsilon" << endl;
             // do nothing, always terminates to epsilon
             (yyval.symbolptr) = NULL;
         }
-#line 3371 "y.tab.c"
+#line 3349 "y.tab.c"
     break;
 
   case 149: /* identifier_list_opt: identifier_list  */
-#line 965 "TinyC3_22CS30004_22CS30061.y"
+#line 1000 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* skip */ cerr << "identifier_list_opt -> identifier_list" << endl;}
-#line 3377 "y.tab.c"
+#line 3355 "y.tab.c"
     break;
 
   case 150: /* type_name: specifier_qualifier_list  */
-#line 967 "TinyC3_22CS30004_22CS30061.y"
+#line 1002 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* doubt skip */ cerr << "type_name -> specifier_qualifier_list" << endl;}
-#line 3383 "y.tab.c"
+#line 3361 "y.tab.c"
     break;
 
   case 151: /* initializer: assignment_expression  */
-#line 970 "TinyC3_22CS30004_22CS30061.y"
+#line 1005 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "initializer -> assignment_expression" << endl;
             (yyval.symbolptr) = (yyvsp[0].expr) -> entry;
         }
-#line 3392 "y.tab.c"
+#line 3370 "y.tab.c"
     break;
 
   case 152: /* initializer: LEFT_CURLY_BRACKET initializer_list RIGHT_CURLY_BRACKET  */
-#line 974 "TinyC3_22CS30004_22CS30061.y"
+#line 1009 "TinyC3_22CS30004_22CS30061.y"
                                                                                 {/* skip */ cerr << "initializer -> LEFT_CURLY_BRACKET initializer_list RIGHT_CURLY_BRACKET" << endl;}
-#line 3398 "y.tab.c"
+#line 3376 "y.tab.c"
     break;
 
   case 153: /* initializer: LEFT_CURLY_BRACKET initializer_list COMMA RIGHT_CURLY_BRACKET  */
-#line 975 "TinyC3_22CS30004_22CS30061.y"
+#line 1010 "TinyC3_22CS30004_22CS30061.y"
                                                                                 {/* skip */ cerr << "initializer -> LEFT_CURLY_BRACKET initializer_list COMMA RIGHT_CURLY_BRACKET" << endl;}
-#line 3404 "y.tab.c"
+#line 3382 "y.tab.c"
     break;
 
   case 154: /* initializer_list: designation_opt initializer  */
-#line 977 "TinyC3_22CS30004_22CS30061.y"
+#line 1012 "TinyC3_22CS30004_22CS30061.y"
                                                                                 {/* skip */ cerr << "initializer_list -> designation_opt initializer" << endl;}
-#line 3410 "y.tab.c"
+#line 3388 "y.tab.c"
     break;
 
   case 155: /* initializer_list: initializer_list COMMA designation_opt initializer  */
-#line 978 "TinyC3_22CS30004_22CS30061.y"
+#line 1013 "TinyC3_22CS30004_22CS30061.y"
                                                                                 {/* skip */ cerr << "initializer_list -> initializer_list COMMA designation_opt initializer" << endl;}
-#line 3416 "y.tab.c"
+#line 3394 "y.tab.c"
     break;
 
   case 156: /* designation: designator_list ASSIGNMENT  */
-#line 980 "TinyC3_22CS30004_22CS30061.y"
+#line 1015 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* skip */ cerr << "designation -> designator_list ASSIGNMENT" << endl;}
-#line 3422 "y.tab.c"
+#line 3400 "y.tab.c"
     break;
 
   case 157: /* designation_opt: %empty  */
-#line 982 "TinyC3_22CS30004_22CS30061.y"
+#line 1017 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* skip */ cerr << "designation_opt -> epsilon" << endl;}
-#line 3428 "y.tab.c"
+#line 3406 "y.tab.c"
     break;
 
   case 158: /* designation_opt: designation  */
-#line 983 "TinyC3_22CS30004_22CS30061.y"
+#line 1018 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* skip */ cerr << "designation_opt -> designation" << endl;}
-#line 3434 "y.tab.c"
+#line 3412 "y.tab.c"
     break;
 
   case 159: /* designator_list: designator  */
-#line 985 "TinyC3_22CS30004_22CS30061.y"
+#line 1020 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* skip */ cerr << "designator_list -> designator" << endl;}
-#line 3440 "y.tab.c"
+#line 3418 "y.tab.c"
     break;
 
   case 160: /* designator_list: designator_list designator  */
-#line 986 "TinyC3_22CS30004_22CS30061.y"
+#line 1021 "TinyC3_22CS30004_22CS30061.y"
                                                 {/* skip */ cerr << "designator_list -> designator_list designator" << endl;}
-#line 3446 "y.tab.c"
+#line 3424 "y.tab.c"
     break;
 
   case 161: /* designator: LEFT_SQUARE_BRACKET constant_expression RIGHT_SQUARE_BRACKET  */
-#line 988 "TinyC3_22CS30004_22CS30061.y"
+#line 1023 "TinyC3_22CS30004_22CS30061.y"
                                                                                 {/* skip */ cerr << "designator -> LEFT_SQUARE_BRACKET constant_expression RIGHT_SQUARE_BRACKET" << endl;}
-#line 3452 "y.tab.c"
+#line 3430 "y.tab.c"
     break;
 
   case 162: /* designator: DOT IDENTIFIER  */
-#line 989 "TinyC3_22CS30004_22CS30061.y"
+#line 1024 "TinyC3_22CS30004_22CS30061.y"
                                                                                 {/* skip */ cerr << "designator -> DOT IDENTIFIER" << endl;}
-#line 3458 "y.tab.c"
+#line 3436 "y.tab.c"
     break;
 
   case 163: /* statement: labeled_statement  */
-#line 993 "TinyC3_22CS30004_22CS30061.y"
+#line 1028 "TinyC3_22CS30004_22CS30061.y"
                                         {/* skip */ cerr << "statement -> labeled_statement" << endl;}
-#line 3464 "y.tab.c"
+#line 3442 "y.tab.c"
     break;
 
   case 164: /* statement: expression_statement  */
-#line 995 "TinyC3_22CS30004_22CS30061.y"
+#line 1030 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "statement -> expression_statement" << endl;
             (yyval.stmt) = (yyvsp[0].stmt);
         }
-#line 3473 "y.tab.c"
+#line 3451 "y.tab.c"
     break;
 
   case 165: /* statement: compound_statement  */
-#line 1000 "TinyC3_22CS30004_22CS30061.y"
+#line 1035 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "statement -> compound_statement" << endl;
             (yyval.stmt) = (yyvsp[0].stmt);
         }
-#line 3482 "y.tab.c"
+#line 3460 "y.tab.c"
     break;
 
   case 166: /* statement: selection_statement  */
-#line 1005 "TinyC3_22CS30004_22CS30061.y"
+#line 1040 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "statement -> selection_statement" << endl;
             (yyval.stmt) = (yyvsp[0].stmt);
         }
-#line 3491 "y.tab.c"
+#line 3469 "y.tab.c"
     break;
 
   case 167: /* statement: iteration_statement  */
-#line 1010 "TinyC3_22CS30004_22CS30061.y"
+#line 1045 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "statement -> iteration_statement" << endl;
             (yyval.stmt) = (yyvsp[0].stmt);
         }
-#line 3500 "y.tab.c"
+#line 3478 "y.tab.c"
     break;
 
   case 168: /* statement: jump_statement  */
-#line 1015 "TinyC3_22CS30004_22CS30061.y"
+#line 1050 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "statement -> jump_statement" << endl;
             (yyval.stmt) = (yyvsp[0].stmt);
         }
-#line 3509 "y.tab.c"
+#line 3487 "y.tab.c"
     break;
 
   case 169: /* labeled_statement: IDENTIFIER COLON statement  */
-#line 1020 "TinyC3_22CS30004_22CS30061.y"
+#line 1055 "TinyC3_22CS30004_22CS30061.y"
                                                             {/* skip */ cerr << "labeled_statement -> IDENTIFIER COLON statement" << endl;}
-#line 3515 "y.tab.c"
+#line 3493 "y.tab.c"
     break;
 
   case 170: /* labeled_statement: CASE constant_expression COLON statement  */
-#line 1021 "TinyC3_22CS30004_22CS30061.y"
+#line 1056 "TinyC3_22CS30004_22CS30061.y"
                                                             {/* skip */ cerr << "labeled_statement -> CASE constant_expression COLON statement" << endl;}
-#line 3521 "y.tab.c"
+#line 3499 "y.tab.c"
     break;
 
   case 171: /* labeled_statement: DEFAULT COLON statement  */
-#line 1022 "TinyC3_22CS30004_22CS30061.y"
+#line 1057 "TinyC3_22CS30004_22CS30061.y"
                                                             {/* skip */ cerr << "labeled_statement -> DEFAULT COLON statement" << endl;}
-#line 3527 "y.tab.c"
+#line 3505 "y.tab.c"
     break;
 
   case 172: /* compound_statement: LEFT_CURLY_BRACKET CT block_item_list_opt RIGHT_CURLY_BRACKET  */
-#line 1025 "TinyC3_22CS30004_22CS30061.y"
+#line 1060 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "compound_statement -> LEFT_CURLY_BRACKET CT block_item_list_opt RIGHT_CURLY_BRACKET" << endl;
             (yyval.stmt) = (yyvsp[-1].stmt);
             switchTable(currST -> parent);
         }
-#line 3537 "y.tab.c"
+#line 3515 "y.tab.c"
     break;
 
   case 173: /* block_item_list_opt: %empty  */
-#line 1032 "TinyC3_22CS30004_22CS30061.y"
+#line 1067 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "block_item_list_opt -> epsilon" << endl;
             (yyval.stmt) = new Statement();
         }
-#line 3546 "y.tab.c"
+#line 3524 "y.tab.c"
     break;
 
   case 174: /* block_item_list_opt: block_item_list  */
-#line 1037 "TinyC3_22CS30004_22CS30061.y"
+#line 1072 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "block_item_list_opt -> block_item_list" << endl;
             (yyval.stmt) = (yyvsp[0].stmt);
         }
-#line 3555 "y.tab.c"
+#line 3533 "y.tab.c"
     break;
 
   case 175: /* block_item_list: block_item  */
-#line 1043 "TinyC3_22CS30004_22CS30061.y"
+#line 1078 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "block_item_list -> block_item" << endl;
             (yyval.stmt) = (yyvsp[0].stmt);
         }
-#line 3564 "y.tab.c"
+#line 3542 "y.tab.c"
     break;
 
   case 176: /* block_item_list: block_item_list M block_item  */
-#line 1048 "TinyC3_22CS30004_22CS30061.y"
+#line 1083 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "block_item_list -> block_item_list M block_item" << endl;
             (yyval.stmt) = (yyvsp[0].stmt);
-            backpatch((yyvsp[-2].stmt) -> nextlist, (yyvsp[-1].inst));
+            backpatch((yyvsp[-2].stmt) -> nextlist, (yyvsp[-1].inst));  // backpatching the nextlist of the previous block_item
         }
-#line 3574 "y.tab.c"
+#line 3552 "y.tab.c"
     break;
 
   case 177: /* block_item: declaration  */
-#line 1055 "TinyC3_22CS30004_22CS30061.y"
+#line 1090 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "block_item -> declaration" << endl;
             (yyval.stmt) = new Statement();
         }
-#line 3583 "y.tab.c"
+#line 3561 "y.tab.c"
     break;
 
   case 178: /* block_item: statement  */
-#line 1060 "TinyC3_22CS30004_22CS30061.y"
+#line 1095 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "block_item -> statement" << endl;
             (yyval.stmt) = (yyvsp[0].stmt);
         }
-#line 3592 "y.tab.c"
+#line 3570 "y.tab.c"
     break;
 
   case 179: /* expression_statement: expression_opt SEMICOLON  */
-#line 1066 "TinyC3_22CS30004_22CS30061.y"
+#line 1101 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "expression_statement -> expression_opt SEMICOLON" << endl;
             (yyval.stmt) = new Statement();
-            if((yyvsp[-1].expr)) (yyval.stmt) -> nextlist = (yyvsp[-1].expr) -> nextlist; /* BEWARE : $1 may be null */
+            if((yyvsp[-1].expr)) (yyval.stmt) -> nextlist = (yyvsp[-1].expr) -> nextlist; 
         }
-#line 3602 "y.tab.c"
+#line 3580 "y.tab.c"
     break;
 
   case 180: /* selection_statement: IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET CB M statement  */
-#line 1073 "TinyC3_22CS30004_22CS30061.y"
+#line 1108 "TinyC3_22CS30004_22CS30061.y"
         {
+            /* Grammar is augmented here to accomodate the backpatching and change of scope*/
             cerr << "selection_statement -> IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET M statement" << endl;
             convertToBool((yyvsp[-4].expr));
-            backpatch((yyvsp[-4].expr) -> truelist, (yyvsp[-1].inst));
+            backpatch((yyvsp[-4].expr) -> truelist, (yyvsp[-1].inst)); // backpatching the truelist of the expression
             (yyval.stmt) = new Statement();
             (yyval.stmt) -> nextlist = merge((yyvsp[-4].expr) -> falselist, (yyvsp[0].stmt) -> nextlist);
         }
-#line 3614 "y.tab.c"
+#line 3593 "y.tab.c"
     break;
 
   case 181: /* selection_statement: IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET CB M statement ELSE N M statement  */
-#line 1081 "TinyC3_22CS30004_22CS30061.y"
+#line 1117 "TinyC3_22CS30004_22CS30061.y"
         {
+            /* Grammar is augmented here to accomodate the backpatching and change of scope*/
             cerr << "selection_statement -> IF LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET M statement ELSE N M statement" << endl;
             convertToBool((yyvsp[-8].expr));
-            backpatch((yyvsp[-8].expr) -> truelist, (yyvsp[-5].inst));
-            backpatch((yyvsp[-8].expr) -> falselist, (yyvsp[-1].inst));
+            backpatch((yyvsp[-8].expr) -> truelist, (yyvsp[-5].inst));  // backpatching the truelist of the expression
+            backpatch((yyvsp[-8].expr) -> falselist, (yyvsp[-1].inst)); // backpatching the falselist of the expression
             (yyval.stmt) = new Statement();
             (yyval.stmt) -> nextlist = merge(merge((yyvsp[-4].stmt) -> nextlist, (yyvsp[-2].stmt) -> nextlist), (yyvsp[0].stmt) -> nextlist);
         }
-#line 3627 "y.tab.c"
+#line 3607 "y.tab.c"
     break;
 
   case 182: /* selection_statement: SWITCH LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET statement  */
-#line 1089 "TinyC3_22CS30004_22CS30061.y"
+#line 1126 "TinyC3_22CS30004_22CS30061.y"
                                                                                         {/* skip */ cerr << "selection_statement -> SWITCH LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET statement" << endl;}
-#line 3633 "y.tab.c"
+#line 3613 "y.tab.c"
     break;
 
   case 183: /* iteration_statement: WHILE M LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET CB M statement  */
-#line 1092 "TinyC3_22CS30004_22CS30061.y"
+#line 1129 "TinyC3_22CS30004_22CS30061.y"
         {
+            /* Grammar is augmented here to accomodate the backpatching and change of scope*/
             cerr << "iteration_statement -> WHILE M LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET M statement" << endl;
             convertToBool((yyvsp[-4].expr));
-            backpatch((yyvsp[-4].expr) -> truelist, (yyvsp[-1].inst));
-            backpatch((yyvsp[0].stmt) -> nextlist, (yyvsp[-6].inst));
+            backpatch((yyvsp[-4].expr) -> truelist, (yyvsp[-1].inst));  // backpatching the truelist of the expression
+            backpatch((yyvsp[0].stmt) -> nextlist, (yyvsp[-6].inst));  // backpatching the nextlist of the statement
             (yyval.stmt) = new Statement();
             (yyval.stmt) -> nextlist = (yyvsp[-4].expr) -> falselist;
             emit("goto", "", "", to_string((yyvsp[-6].inst)));
         }
-#line 3647 "y.tab.c"
+#line 3628 "y.tab.c"
     break;
 
   case 184: /* iteration_statement: DO M statement M WHILE LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET SEMICOLON  */
-#line 1102 "TinyC3_22CS30004_22CS30061.y"
+#line 1140 "TinyC3_22CS30004_22CS30061.y"
         {
+            /* Grammar is augmented here to accomodate the backpatching and change of scope*/
             cerr << "iteration_statement -> DO M statement M WHILE LEFT_ROUND_BRACKET expression RIGHT_ROUND_BRACKET SEMICOLON" << endl;
             convertToBool((yyvsp[-2].expr));
             backpatch((yyvsp[-2].expr) -> truelist, (yyvsp[-7].inst));
@@ -3656,12 +3638,13 @@ yyreduce:
             (yyval.stmt) = new Statement();
             (yyval.stmt) -> nextlist = (yyvsp[-2].expr) -> falselist;
         }
-#line 3660 "y.tab.c"
+#line 3642 "y.tab.c"
     break;
 
   case 185: /* iteration_statement: FOR LEFT_ROUND_BRACKET expression_opt SEMICOLON M expression_opt SEMICOLON FN CB M expression_opt N1 RIGHT_ROUND_BRACKET M statement  */
-#line 1111 "TinyC3_22CS30004_22CS30061.y"
+#line 1150 "TinyC3_22CS30004_22CS30061.y"
         {
+            /* Grammar is augmented here to accomodate the backpatching and change of scope*/
             cerr << "iteration_statement -> FOR LEFT_ROUND_BRACKET expression_opt SEMICOLON M expression_opt SEMICOLON M expression_opt N RIGHT_ROUND_BRACKET M statement" << endl;
             if((yyvsp[-9].expr)) convertToBool((yyvsp[-9].expr));
             if((yyvsp[-9].expr)) backpatch((yyvsp[-9].expr) -> truelist, (yyvsp[-1].inst));
@@ -3672,124 +3655,124 @@ yyreduce:
             else (yyval.stmt) -> nextlist = makelist();
             emit("goto", "", "", to_string((yyvsp[-5].inst)));
         }
-#line 3676 "y.tab.c"
+#line 3659 "y.tab.c"
     break;
 
   case 186: /* iteration_statement: FOR LEFT_ROUND_BRACKET declaration expression_opt SEMICOLON expression_opt RIGHT_ROUND_BRACKET statement  */
-#line 1122 "TinyC3_22CS30004_22CS30061.y"
+#line 1162 "TinyC3_22CS30004_22CS30061.y"
                                                                                                                                         {/* skip */ cerr << "iteration_statement -> FOR LEFT_ROUND_BRACKET declaration expression_opt SEMICOLON expression_opt RIGHT_ROUND_BRACKET statement" << endl;}
-#line 3682 "y.tab.c"
+#line 3665 "y.tab.c"
     break;
 
   case 187: /* jump_statement: GOTO IDENTIFIER SEMICOLON  */
-#line 1124 "TinyC3_22CS30004_22CS30061.y"
+#line 1164 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "jump_statement -> GOTO IDENTIFIER SEMICOLON" << endl;}
-#line 3688 "y.tab.c"
+#line 3671 "y.tab.c"
     break;
 
   case 188: /* jump_statement: CONTINUE SEMICOLON  */
-#line 1125 "TinyC3_22CS30004_22CS30061.y"
+#line 1165 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "jump_statement -> CONTINUE SEMICOLON" << endl;}
-#line 3694 "y.tab.c"
+#line 3677 "y.tab.c"
     break;
 
   case 189: /* jump_statement: BREAK SEMICOLON  */
-#line 1126 "TinyC3_22CS30004_22CS30061.y"
+#line 1166 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "jump_statement -> BREAK SEMICOLON" << endl;}
-#line 3700 "y.tab.c"
+#line 3683 "y.tab.c"
     break;
 
   case 190: /* jump_statement: RETURN expression_opt SEMICOLON  */
-#line 1128 "TinyC3_22CS30004_22CS30061.y"
+#line 1168 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "jump_statement -> RETURN expression_opt SEMICOLON" << endl;
             (yyval.stmt) = new Statement();
             if((yyvsp[-1].expr))
-                emit("return", (yyvsp[-1].expr) -> entry -> name, "", "");
+                emit("return", (yyvsp[-1].expr) -> entry -> name, "", "");    // return value
             else
-                emit("return", "", "", "");
+                emit("return", "", "", "");     // return nothing
         }
-#line 3713 "y.tab.c"
+#line 3696 "y.tab.c"
     break;
 
   case 191: /* translation_unit: external_declaration  */
-#line 1139 "TinyC3_22CS30004_22CS30061.y"
+#line 1179 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "translation_unit -> external_declaration" << endl;}
-#line 3719 "y.tab.c"
+#line 3702 "y.tab.c"
     break;
 
   case 192: /* translation_unit: translation_unit external_declaration  */
-#line 1140 "TinyC3_22CS30004_22CS30061.y"
+#line 1180 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "translation_unit -> translation_unit external_declaration" << endl;}
-#line 3725 "y.tab.c"
+#line 3708 "y.tab.c"
     break;
 
   case 193: /* external_declaration: function_definition  */
-#line 1142 "TinyC3_22CS30004_22CS30061.y"
+#line 1182 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "external_declaration -> function_definition" << endl;}
-#line 3731 "y.tab.c"
+#line 3714 "y.tab.c"
     break;
 
   case 194: /* external_declaration: declaration  */
-#line 1143 "TinyC3_22CS30004_22CS30061.y"
+#line 1183 "TinyC3_22CS30004_22CS30061.y"
                                                         {/* skip */ cerr << "external_declaration -> declaration" << endl;}
-#line 3737 "y.tab.c"
+#line 3720 "y.tab.c"
     break;
 
   case 195: /* function_definition: declaration_specifiers declarator declaration_list_opt CTF LEFT_CURLY_BRACKET block_item_list_opt RIGHT_CURLY_BRACKET  */
-#line 1146 "TinyC3_22CS30004_22CS30061.y"
+#line 1186 "TinyC3_22CS30004_22CS30061.y"
         {
             cerr << "function_definition -> declaration_specifiers declarator declaration_list_opt compound_statement" << endl;
             if(quadTable -> arr.back() -> op != "return") yyerror("Reached end of function without return statement");
-            switchTable(globalST);
+            switchTable(globalST); // switch back to global symbol table after function definition
         }
-#line 3747 "y.tab.c"
+#line 3730 "y.tab.c"
     break;
 
   case 196: /* declaration_list: declaration  */
-#line 1152 "TinyC3_22CS30004_22CS30061.y"
+#line 1192 "TinyC3_22CS30004_22CS30061.y"
                                                                                                         {/* skip */ cerr << "declaration_list -> declaration" << endl;}
-#line 3753 "y.tab.c"
+#line 3736 "y.tab.c"
     break;
 
   case 197: /* declaration_list: declaration_list declaration  */
-#line 1153 "TinyC3_22CS30004_22CS30061.y"
+#line 1193 "TinyC3_22CS30004_22CS30061.y"
                                                                                                         {/* skip */ cerr << "declaration_list -> declaration_list declaration" << endl;}
-#line 3759 "y.tab.c"
+#line 3742 "y.tab.c"
     break;
 
   case 198: /* declaration_list_opt: %empty  */
-#line 1155 "TinyC3_22CS30004_22CS30061.y"
+#line 1195 "TinyC3_22CS30004_22CS30061.y"
                                                                                                         {/* skip */ cerr << "declaration_list_opt -> epsilon" << endl;}
-#line 3765 "y.tab.c"
+#line 3748 "y.tab.c"
     break;
 
   case 199: /* declaration_list_opt: declaration_list  */
-#line 1156 "TinyC3_22CS30004_22CS30061.y"
+#line 1196 "TinyC3_22CS30004_22CS30061.y"
                                                                                                         {/* skip */ cerr << "declaration_list_opt -> declaration_list" << endl;}
-#line 3771 "y.tab.c"
+#line 3754 "y.tab.c"
     break;
 
   case 200: /* M: %empty  */
-#line 1161 "TinyC3_22CS30004_22CS30061.y"
+#line 1201 "TinyC3_22CS30004_22CS30061.y"
         {
             (yyval.inst) = nextinstr();
         }
-#line 3779 "y.tab.c"
+#line 3762 "y.tab.c"
     break;
 
   case 201: /* N: %empty  */
-#line 1166 "TinyC3_22CS30004_22CS30061.y"
+#line 1206 "TinyC3_22CS30004_22CS30061.y"
         {
             (yyval.stmt) = new Statement();
             (yyval.stmt) -> nextlist = makelist(nextinstr());
             emit("goto", "", "", "__");
         }
-#line 3789 "y.tab.c"
+#line 3772 "y.tab.c"
     break;
 
   case 202: /* N1: %empty  */
-#line 1173 "TinyC3_22CS30004_22CS30061.y"
+#line 1213 "TinyC3_22CS30004_22CS30061.y"
         {
             if(currExprFor) {
                 (yyval.stmt) = new Statement();
@@ -3798,44 +3781,44 @@ yyreduce:
             }
             else (yyval.stmt) = NULL;
         }
-#line 3802 "y.tab.c"
+#line 3785 "y.tab.c"
     break;
 
   case 203: /* CT: %empty  */
-#line 1183 "TinyC3_22CS30004_22CS30061.y"
+#line 1223 "TinyC3_22CS30004_22CS30061.y"
         {
             addNestedTable(currST);
         }
-#line 3810 "y.tab.c"
+#line 3793 "y.tab.c"
     break;
 
   case 204: /* CTF: %empty  */
-#line 1188 "TinyC3_22CS30004_22CS30061.y"
+#line 1228 "TinyC3_22CS30004_22CS30061.y"
         {
             emit("label", currSymbol -> name, "", "");
             currST = currSymbol -> nestedTable;
         }
-#line 3819 "y.tab.c"
+#line 3802 "y.tab.c"
     break;
 
   case 205: /* CB: %empty  */
-#line 1193 "TinyC3_22CS30004_22CS30061.y"
+#line 1233 "TinyC3_22CS30004_22CS30061.y"
         {
             convertToBool(currExpr);
         }
-#line 3827 "y.tab.c"
+#line 3810 "y.tab.c"
     break;
 
   case 206: /* FN: %empty  */
-#line 1198 "TinyC3_22CS30004_22CS30061.y"
+#line 1238 "TinyC3_22CS30004_22CS30061.y"
         {
             currExprFor = currExpr;
         }
-#line 3835 "y.tab.c"
+#line 3818 "y.tab.c"
     break;
 
 
-#line 3839 "y.tab.c"
+#line 3822 "y.tab.c"
 
       default: break;
     }
@@ -4028,7 +4011,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 1202 "TinyC3_22CS30004_22CS30061.y"
+#line 1242 "TinyC3_22CS30004_22CS30061.y"
 
 
 void yyerror(string s) {

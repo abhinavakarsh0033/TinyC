@@ -1,40 +1,209 @@
-$8	float		8	0	No
-c	int	1	4	0	No
+		3-Address Code
 
-************************************************Quadruple Table***********************************************************
-1:	main:
-2:		$0	=	10
-3:		$1	=	20
-4:		$2	=	1
-5:		c	=	$2
-6:		$3	=	1
-7:		$4	=	$3	*	160
-8:		$5	=	2
-9:		$7	=	$5	*	8
-10:		$6	=	$4	+	$7
-11:		$8	=	arr[$6]
-12:			=	c	int2float	
-13:		$9	=	$8	+	c
-14:		b	=	$9
-15:		$10	=	0
-16:		return	$10
+1:		$0	=	10
+2:		$1	=	10
+3:	RecFunc:
+4:		$2	=	0
+5:		if	sum == $2	goto	7
+6:		goto	9
+7:		$4	=	1
+8:		return	$4
+
+9:		$5	=	0
+10:		if	n <= $5	goto	12
+11:		goto	14
+12:		$7	=	0
+13:		return	$7
+
+14:		$8	=	n	*	40
+15:		$10	=	sum	*	4
+16:		$9	=	$8	+	$10
+17:		$11	=	dp[$9]
+18:		$12	=	1
+19:		$13	=	-$12
+20:		if	$11 != $13	goto	22
+21:		goto	27
+22:		$15	=	n	*	40
+23:		$17	=	sum	*	4
+24:		$16	=	$15	+	$17
+25:		$18	=	dp[$16]
+26:		return	$18
+
+27:		$19	=	n	*	40
+28:		$21	=	sum	*	4
+29:		$20	=	$19	+	$21
+30:		$22	=	1
+31:		$23	=	n	-	$22
+32:		param	$23
+33:		param	sum
+34:		param	dp
+35:		$24	=	call	RecFunc	3
+36:		dp[$20]	=	$24
+37:		return	dp
+
+38:	main:
+39:		$25	=	10
+40:		$26	=	20
+41:		$27	=	2.5
+42:		x	=	$27
+43:		$28	=	1
+44:		c	=	$28
+45:		$29	=	1
+46:		$30	=	$29	*	160
+47:		$31	=	2
+48:		$33	=	$31	*	8
+49:		$32	=	$30	+	$33
+50:		$34	=	arr[$32]
+51:		int2float	c
+52:		$35	=	$34	+	c
+53:		b	=	$35
+54:		$36	=	0
+55:		return	$36
+
+56:		$37	=	5
+57:		$38	=	11
+58:		$39	=	11
+59:		$40	=	0
+60:		i	=	$40
+61:		$41	=	i	*	4
+62:		$42	=	1
+63:		arr1[$41]	=	$42
+64:		$43	=	i
+65:		i	=	i	+	1
+66:		$44	=	5
+67:		if	i < $44	goto	61
+68:		goto	69
+69:		$46	=	0
+70:		i	=	$46
+71:		$47	=	10
+72:		if	i <= $47	goto	77
+73:		goto	93
+74:		$49	=	i
+75:		i	=	i	+	1
+76:		goto	71
+77:		$50	=	0
+78:		j	=	$50
+79:		$51	=	10
+80:		if	j <= $51	goto	85
+81:		goto	74
+82:		$53	=	j
+83:		j	=	j	+	1
+84:		goto	79
+85:		$54	=	i	*	44
+86:		$56	=	j	*	4
+87:		$55	=	$54	+	$56
+88:		$57	=	1
+89:		$58	=	-$57
+90:		dp[$55]	=	$58
+91:		goto	82
+92:		goto	74
+93:		$59	=	9
+94:		sum	=	$59
+95:		$60	=	5
+96:		param	$60
+97:		param	sum
+98:		param	dp
+99:		$61	=	call	RecFunc	3
+100:		ans	=	$61
+101:		$62	=	0
+102:		return	$62
 
 
 		Global SYMBOL TABLE		Parent : NULL
-main	function		0	0	Yes
+Name	Type	Initial-Value	Size	Offset	Nested-Table
+RecFunc	int		4	0	Yes
+main	int		4	503	Yes
+
+		$function_RecFunc SYMBOL TABLE		Parent : Global
+Name	Type	Initial-Value	Size	Offset	Nested-Table
+n	int		4	4	No
+sum	int		4	8	No
+dp	array(10, array(10, int))		400	12	No
+$0	int	10	4	412	No
+$1	int	10	4	416	No
+$2	int	0	4	420	No
+$3	bool		1	424	No
+$4	int	1	4	425	No
+$5	int	0	4	429	No
+$6	bool		1	433	No
+$7	int	0	4	434	No
+$8	int		4	438	No
+$9	int		4	442	No
+$10	int		4	446	No
+$11	int		4	450	No
+$12	int	1	4	454	No
+$13	int		4	458	No
+$14	bool		1	462	No
+$15	int		4	463	No
+$16	int		4	467	No
+$17	int		4	471	No
+$18	int		4	475	No
+$19	int		4	479	No
+$20	int		4	483	No
+$21	int		4	487	No
+$22	int	1	4	491	No
+$23	int		4	495	No
+$24	int		4	499	No
 
 		$function_main SYMBOL TABLE		Parent : Global
-arr	array(10, array(20, float))		1600	0	No
-$0	int	10	4	1600	No
-$1	int	20	4	1604	No
-c	float	1	8	1608	No
-$2	int	1	4	1616	No
-b	int		4	1620	No
-$3	int	1	4	1624	No
-$4	int		4	1628	No
-$5	int	2	4	1632	No
-$6	int		4	1636	No
-$7	int		4	1640	No
-$8	float		8	1644	No
-$9	float		8	1652	No
-$10	int	0	4	1660	No
+Name	Type	Initial-Value	Size	Offset	Nested-Table
+arr	array(10, array(20, float))		1600	507	No
+$25	int	10	4	2107	No
+$26	int	20	4	2111	No
+x	float	2.5	8	2115	No
+$27	float	2.5	8	2123	No
+c	int	1	4	2131	No
+$28	int	1	4	2135	No
+b	int		4	2139	No
+$29	int	1	4	2143	No
+$30	int		4	2147	No
+$31	int	2	4	2151	No
+$32	int		4	2155	No
+$33	int		4	2159	No
+$34	float		8	2163	No
+$35	float		8	2171	No
+$36	int	0	4	2179	No
+arr1	array(5, int)		20	2183	No
+$37	int	5	4	2203	No
+dp	array(11, array(11, int))		484	2207	No
+$38	int	11	4	2691	No
+$39	int	11	4	2695	No
+i	int	0	4	2699	No
+$40	int	0	4	2703	No
+$function_main_Block0	int		4	2707	Yes
+$44	int	5	4	2723	No
+$45	bool		1	2727	No
+$46	int	0	4	2728	No
+$47	int	10	4	2732	No
+$48	bool		1	2736	No
+$49	int		4	2737	No
+$function_main_Block1	int		4	2741	Yes
+sum	int	9	4	2786	No
+$59	int	9	4	2790	No
+ans	int		4	2794	No
+$60	int	5	4	2798	No
+$61	int		4	2802	No
+$62	int	0	4	2806	No
+
+		$function_main_Block0 SYMBOL TABLE		Parent : $function_main
+Name	Type	Initial-Value	Size	Offset	Nested-Table
+$41	int		4	2711	No
+$42	int	1	4	2715	No
+$43	int		4	2719	No
+
+		$function_main_Block1 SYMBOL TABLE		Parent : $function_main
+Name	Type	Initial-Value	Size	Offset	Nested-Table
+j	int		4	2745	No
+$50	int	0	4	2749	No
+$51	int	10	4	2753	No
+$52	bool		1	2757	No
+$53	int		4	2758	No
+$function_main_Block1_Block0	int		4	2762	Yes
+
+		$function_main_Block1_Block0 SYMBOL TABLE		Parent : $function_main_Block1
+Name	Type	Initial-Value	Size	Offset	Nested-Table
+$54	int		4	2766	No
+$55	int		4	2770	No
+$56	int		4	2774	No
+$57	int	1	4	2778	No
+$58	int		4	2782	No

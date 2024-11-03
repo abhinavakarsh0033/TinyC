@@ -1,4 +1,11 @@
-void swap(int *a, int *b)
+// /**
+//  * TinyC Intermediate Code Generation
+//  * Test3 : Testing various unary operators and if else pointers and ampersand
+//  * Pranav Jha (22CS30061)
+//  * Abhinav Akarsh (22CS30004)
+//  */
+
+float swap(int *a, int *b)
 {
     int temp = *a;
     temp = *a;

@@ -235,14 +235,21 @@ block_item_list -> block_item_list M block_item
 primary_expression -> IDENTIFIER
 postfix_expression -> primary_expression
 unary_expression -> postfix_expression
-assignment_operator -> RIGHT_SHIFT_ASSIGNMENT
-primary_expression -> INTEGER_CONSTANT
+assignment_operator -> ASSIGNMENT
+primary_expression -> IDENTIFIER
 postfix_expression -> primary_expression
 unary_expression -> postfix_expression
 cast_expression -> unary_expression
 multiplicative_expression -> cast_expression
 additive_expression -> multiplicative_expression
 shift_expression -> additive_expression
+primary_expression -> INTEGER_CONSTANT
+postfix_expression -> primary_expression
+unary_expression -> postfix_expression
+cast_expression -> unary_expression
+multiplicative_expression -> cast_expression
+additive_expression -> multiplicative_expression
+shift_expression -> shift_expression RIGHT_SHIFT additive_expression
 relational_expression -> shift_expression
 equality_expression -> relational_expression
 AND_expression -> equality_expression

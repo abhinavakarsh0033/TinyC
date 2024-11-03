@@ -1,7 +1,5 @@
-x	int		4	0	No
-y	int		4	0	No
+		3-Address Code
 
-************************************************Quadruple Table***********************************************************
 1:	main:
 2:		$0	=	10
 3:		c	=	$0
@@ -26,26 +24,30 @@ y	int		4	0	No
 
 
 		Global SYMBOL TABLE		Parent : NULL
-foo	function		0	0	Yes
-fx	function		0	23	Yes
-main	function		0	35	Yes
+Name	Type	Initial-Value	Size	Offset	Nested-Table
+foo	void		0	0	Yes
+fx	int		4	23	Yes
+main	int		4	39	Yes
 
 		$function_foo SYMBOL TABLE		Parent : Global
+Name	Type	Initial-Value	Size	Offset	Nested-Table
 printf	int		4	0	No
 $6	array(15, char)	"Hello World\n"	15	4	No
 $7	int		4	19	No
 
 		$function_fx SYMBOL TABLE		Parent : Global
-x	int		4	23	No
-y	int		4	27	No
-$5	int		4	31	No
+Name	Type	Initial-Value	Size	Offset	Nested-Table
+x	int		4	27	No
+y	int		4	31	No
+$5	int		4	35	No
 
 		$function_main SYMBOL TABLE		Parent : Global
-c	int	10	4	35	No
-$0	int	10	4	39	No
-d	int	20	4	43	No
-$1	int	20	4	47	No
-e	int		4	51	No
-$2	function		0	55	No
-$3	function		0	55	No
-$4	int	0	4	55	No
+Name	Type	Initial-Value	Size	Offset	Nested-Table
+c	int	10	4	43	No
+$0	int	10	4	47	No
+d	int	20	4	51	No
+$1	int	20	4	55	No
+e	int		4	59	No
+$2	int		4	63	No
+$3	void		0	67	No
+$4	int	0	4	67	No
